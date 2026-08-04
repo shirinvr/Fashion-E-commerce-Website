@@ -5,11 +5,11 @@ function Login() {
     return (
         <div className="login-container">
             <div className="container">
-                <div className="row justify-content-center align-items-center">
+                <div className="row justify-content-center align-items-center min-vh-94">
 
                     <div className="col-lg-10">
 
-                        <div className="card login-card shadow-lg border-0">
+                        <div className="card login-card shadow-lg border-0" >
 
                             <div className="row g-0">
 
@@ -86,7 +86,7 @@ function Login() {
 
                                                     <input
                                                         type="checkbox"
-                                                        className="form-check-input me-2"
+                                                        className="form-check-input me-2 rememberme-checkbox"
                                                     />
 
                                                     Remember Me

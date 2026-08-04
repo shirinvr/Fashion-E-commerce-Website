@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ApiProcedureMappings>
+
+  <ApiMethod name="GetAllCategories"><StoredProcedure>ec.GetAllProducts_Category</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetAllUsersDetails"><StoredProcedure>ec.GetAllUsersDetails</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetAllApprTypes"><StoredProcedure>ec.GetAllApprTypes</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetAllApprSettings"><StoredProcedure>ec.GetAllApprSettings</StoredProcedure></ApiMethod>
+  <ApiMethod name="SaveApprovalSettingsUpdateDelete"><StoredProcedure>ec.usp_SaveApprovalSettingsUpdateDelete</StoredProcedure></ApiMethod>
+
+
+</ApiProcedureMappings>

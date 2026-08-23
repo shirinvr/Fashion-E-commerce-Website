@@ -1,5 +1,8 @@
+using System.Text.Json;
+using Newtonsoft.Json.Linq;
+
 public class DynamicRequest
 {
-    public string SpName { get; set; }
-    public Dictionary<string, object> Parameters { get; set; }
+    public required string SpName { get; set; }
+    public JsonElement? Parameters { get; set; }
 }

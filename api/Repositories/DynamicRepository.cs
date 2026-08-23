@@ -1,8 +1,7 @@
 using System.Data;
-using Microsoft.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
-using System.Text.Json;
+using Microsoft.Data.SqlClient;
 
 public class DynamicRepository : IDynamicRepository
 {
@@ -10,144 +9,386 @@ public class DynamicRepository : IDynamicRepository
 
     public DynamicRepository(IConfiguration config)
     {
-        _connectionString = config.GetConnectionString("DefaultConnection");
+        _connectionString =
+            config.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException(
+                "DefaultConnection connection string is not configured.");
     }
 
+
+    // =============================================================
+    // Execute Procedure
+    // =============================================================
+
     public async Task<JObject> ExecuteProcedureAsync(
-    string spName,
-    Dictionary<string, object> parameters)
+        string spName,
+        JToken? request)
     {
-        using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand(spName, conn)
+        if (string.IsNullOrWhiteSpace(spName))
+            throw new ArgumentException(
+                "Stored procedure name is required.",
+                nameof(spName));
+
+        var xmlRoot = BuildXml(request);
+
+        string xmlData = xmlRoot.ToString(
+            SaveOptions.DisableFormatting);
+
+        await using var connection =
+            new SqlConnection(_connectionString);
+
+        await connection.OpenAsync();
+
+        await using SqlTransaction transaction = (SqlTransaction)await connection.BeginTransactionAsync();
+
+        try
         {
-            CommandType = CommandType.StoredProcedure
-        };
+            var tables = new List<DataTable>();
 
-        var xmlRoot = new XElement("root");
+            // ---------------------------------------------------------
+            // Execute stored procedure
+            // ---------------------------------------------------------
 
-        if (parameters != null)
-        {
-            // CASE 1: SAVE / UPDATE APIs (entity present)
-            if (parameters.ContainsKey("entity"))
-            {
-                JObject entity;
-                if (parameters["entity"] is JsonElement jsonElement)
+            await using var command =
+                new SqlCommand(spName, connection, transaction)
                 {
-                    entity = JObject.Parse(jsonElement.GetRawText());
-                }
-                else
-                {
-                    entity = JObject.FromObject(parameters["entity"]);
-                }
-                var entityElement = new XElement("entity");
+                    CommandType = CommandType.StoredProcedure,
+                    CommandTimeout = 120
+                };
 
-                foreach (var prop in entity.Properties())
-                {
-                    // Handle arrays (users)
-                    if (prop.Value.Type == JTokenType.Array)
-                    {
-                        var listElement = new XElement(prop.Name);
+            command.Parameters.Add(
+                "@xmldata",
+                SqlDbType.Xml).Value = xmlData;
 
-                        foreach (var item in prop.Value)
-                        {
-                            // generic handling for array objects
-                            foreach (var field in ((JObject)item).Properties())
-                            {
-                                listElement.Add(
-                                    new XElement(
-                                        field.Name,
-                                        field.Value?.ToString()
-                                    )
-                                );
-                            }
-                        }
+            // ---------------------------------------------------------
+            // Read ALL result sets
+            // ---------------------------------------------------------
 
-                        entityElement.Add(listElement);
-                    }
-                    else
-                    {
-                        entityElement.Add(
-                            new XElement(prop.Name, prop.Value?.ToString())
-                        );
-                    }
-                }
+            await using var reader =
+                await command.ExecuteReaderAsync();
 
-                xmlRoot.Add(entityElement);
-            }
-            // CASE 2: GET / LIST APIs (flat params)
-            else
-            {
-                foreach (var param in parameters)
-                {
-                    xmlRoot.Add(
-                        new XElement(
-                            param.Key,
-                            param.Value?.ToString()
-                        )
-                    );
-                }
-            }
-        }
-
-        cmd.Parameters.Add("@XmlData", SqlDbType.Xml).Value = xmlRoot.ToString();
-
-        await conn.OpenAsync();
-
-        var tables = new List<DataTable>();
-
-        using (var reader = await cmd.ExecuteReaderAsync())
-        {
             do
             {
-                var dt = new DataTable();
+                if (reader.FieldCount <= 0)
+                    continue;
 
+                var table = new DataTable();
+
+                // Create columns
                 for (int i = 0; i < reader.FieldCount; i++)
-                    dt.Columns.Add(reader.GetName(i), reader.GetFieldType(i));
-
-                while (reader.Read())
                 {
-                    var vals = new object[reader.FieldCount];
-                    reader.GetValues(vals);
-                    dt.Rows.Add(vals);
+                    string columnName = reader.GetName(i);
+
+                    if (string.IsNullOrWhiteSpace(columnName))
+                    {
+                        columnName = $"Column{i + 1}";
+                    }
+
+                    // Avoid duplicate DataTable column names
+                    if (table.Columns.Contains(columnName))
+                    {
+                        columnName =
+                            $"{columnName}_{i + 1}";
+                    }
+
+                    table.Columns.Add(
+                        columnName,
+                        GetSafeFieldType(reader, i));
                 }
 
-                tables.Add(dt);
+                // Read rows
+                while (await reader.ReadAsync())
+                {
+                    var row = table.NewRow();
+
+                    for (int i = 0;
+                         i < reader.FieldCount;
+                         i++)
+                    {
+                        row[i] =
+                            await reader.IsDBNullAsync(i)
+                                ? DBNull.Value
+                                : reader.GetValue(i);
+                    }
+
+                    table.Rows.Add(row);
+                }
+
+                tables.Add(table);
 
             } while (await reader.NextResultAsync());
+
+            // ---------------------------------------------------------
+            // Reader is completely consumed/disposed here
+            // ---------------------------------------------------------
+
+            await transaction.CommitAsync();
+
+            return BuildResponse(tables);
         }
-
-        bool success = false;
-        string message = "No message returned";
-
-        if (tables.Count > 0 && tables[0].Rows.Count > 0)
+        catch
         {
-            success = Convert.ToBoolean(tables[0].Rows[0]["Success"]);
-            message = tables[0].Rows[0]["Message"]?.ToString();
-        }
-
-        var data = new JObject();
-
-        for (int t = 1; t < tables.Count; t++)
-        {
-            var arr = new JArray();
-            foreach (DataRow row in tables[t].Rows)
+            try
             {
-                var obj = new JObject();
-                foreach (DataColumn col in tables[t].Columns)
-                    obj[col.ColumnName] = JToken.FromObject(row[col]);
-                arr.Add(obj);
+                await transaction.RollbackAsync();
+            }
+            catch
+            {
+                // Do not hide the original exception.
             }
 
-            data[$"result{t}"] = arr;
+            throw;
         }
+    }
+
+
+    // =============================================================
+    // Build XML
+    // =============================================================
+
+    private XElement BuildXml(JToken? request)
+    {
+        var root = new XElement("root");
+
+
+        if (request == null ||
+            request.Type == JTokenType.Null)
+        {
+            return root;
+        }
+
+
+        // Object
+        if (request is JObject obj)
+        {
+            foreach (var property in obj.Properties())
+            {
+                root.Add(
+                    ConvertPropertyToXml(
+                        property.Name,
+                        property.Value
+                    )
+                );
+            }
+
+            return root;
+        }
+
+
+        // Array
+        if (request is JArray array)
+        {
+            foreach (var item in array)
+            {
+                root.Add(
+                    ConvertItemToXml(item)
+                );
+            }
+
+            return root;
+        }
+
+
+        // Simple value
+        root.Add(
+            new XElement(
+                "value",
+                request.ToString()
+            )
+        );
+
+        return root;
+    }
+
+
+    // =============================================================
+    // Convert Property
+    // =============================================================
+
+    private XElement ConvertPropertyToXml(
+        string propertyName,
+        JToken value)
+    {
+        var element =
+            new XElement(propertyName);
+
+
+        if (value == null ||
+            value.Type == JTokenType.Null)
+        {
+            return element;
+        }
+
+
+        // Simple value
+        if (value is JValue)
+        {
+            element.Value =
+                value.ToString();
+
+            return element;
+        }
+
+
+        // Object
+        if (value is JObject obj)
+        {
+            foreach (var property in obj.Properties())
+            {
+                element.Add(
+                    ConvertPropertyToXml(
+                        property.Name,
+                        property.Value
+                    )
+                );
+            }
+
+            return element;
+        }
+
+
+        // Array
+        if (value is JArray array)
+        {
+            foreach (var item in array)
+            {
+                element.Add(
+                    ConvertItemToXml(item)
+                );
+            }
+
+            return element;
+        }
+
+
+        return element;
+    }
+
+    private Type GetSafeFieldType(
+        SqlDataReader reader,
+        int index)
+    {
+        try
+        {
+            return reader.GetFieldType(index);
+        }
+        catch
+        {
+            return typeof(object);
+        }
+    }
+
+
+    // =============================================================
+    // Convert Array Item
+    // =============================================================
+
+    private XElement ConvertItemToXml(JToken item)
+    {
+        var itemElement =
+            new XElement("item");
+
+
+        // Object
+        if (item is JObject obj)
+        {
+            foreach (var property in obj.Properties())
+            {
+                itemElement.Add(
+                    ConvertPropertyToXml(
+                        property.Name,
+                        property.Value
+                    )
+                );
+            }
+
+            return itemElement;
+        }
+
+
+        // Array
+        if (item is JArray array)
+        {
+            foreach (var child in array)
+            {
+                itemElement.Add(
+                    ConvertItemToXml(child)
+                );
+            }
+
+            return itemElement;
+        }
+
+
+        // Simple value
+        if (item != null &&
+            item.Type != JTokenType.Null)
+        {
+            itemElement.Value =
+                item.ToString();
+        }
+
+
+        return itemElement;
+    }
+
+
+    // =============================================================
+    // Build Response
+    // =============================================================
+
+    private JObject BuildResponse(
+        List<DataTable> tables)
+    {
+        var data = new JObject();
+
+
+        for (int t = 0;
+             t < tables.Count;
+             t++)
+        {
+            var resultArray =
+                new JArray();
+
+
+            DataTable table =
+                tables[t];
+
+
+            foreach (DataRow row in table.Rows)
+            {
+                var item =
+                    new JObject();
+
+
+                foreach (DataColumn column
+                    in table.Columns)
+                {
+                    object value =
+                        row[column];
+
+
+                    item[column.ColumnName] =
+                        value == DBNull.Value
+                            ? JValue.CreateNull()
+                            : JToken.FromObject(value);
+                }
+
+
+                resultArray.Add(item);
+            }
+
+
+            data[$"result{t + 1}"] =
+                resultArray;
+        }
+
 
         return new JObject
         {
-            ["success"] = success,
-            ["message"] = message,
+            ["success"] = true,
+            ["message"] = "Success",
             ["data"] = data
         };
     }
-
-
 }

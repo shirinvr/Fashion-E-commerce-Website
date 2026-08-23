@@ -14,6 +14,7 @@ public class DynamicController : ControllerBase
     public async Task<IActionResult> ExecuteRequest([FromBody] DynamicRequest request)
     {
         var result = await _service.ExecuteDynamicRequest(request);
-        return Content(result.ToString(), "application/json");
+
+        return Content(result.ToString(),"application/json");
     }
 }

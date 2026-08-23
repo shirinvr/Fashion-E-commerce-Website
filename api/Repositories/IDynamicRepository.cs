@@ -2,5 +2,5 @@ using Newtonsoft.Json.Linq;
 
 public interface IDynamicRepository
 {
-    Task<JObject> ExecuteProcedureAsync(string storedProcedure, Dictionary<string, object> parameters);
+    Task<JObject> ExecuteProcedureAsync(string storedProcedure,JToken? request);
 }

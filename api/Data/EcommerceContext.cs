@@ -1,10 +1,10 @@
+using api.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class EcommerceContext : DbContext
 {
     public EcommerceContext(DbContextOptions<EcommerceContext> options) : base(options) { }
-
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Category> Category { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 }

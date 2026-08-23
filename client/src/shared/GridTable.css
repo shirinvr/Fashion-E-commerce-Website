@@ -1,0 +1,178 @@
+/* ===============================
+   GRID TABLE BASE
+================================= */
+.gridtable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #ffffff;
+  font-size: 14px;
+  overflow: hidden;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* ===============================
+   TABLE HEADER
+================================= */
+.gridtable thead th {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #7cc9ff, #4fa3e3);
+  color: #ffffff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #dcdcdc;
+  white-space: nowrap;
+}
+
+/* ===============================
+   FILTER ROW
+================================= */
+.gridtable thead td {
+  background-color: #f8fbff;
+  padding: 6px 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.gridtable thead input {
+  font-size: 13px;
+}
+
+.gridtable thead i {
+  color: #6c757d;
+}
+
+/* ===============================
+   TABLE BODY
+================================= */
+.gridtable tbody tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.gridtable tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.gridtable tbody tr:hover {
+  background-color: #eef6ff;
+}
+
+.gridtable tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #eeeeee;
+  vertical-align: middle;
+  color: #333333;
+}
+
+/* ===============================
+   FOOTER / PAGINATION
+================================= */
+.gridtable tfoot td {
+  background-color: #f4f8fc;
+  padding: 8px;
+  border-top: 1px solid #dcdcdc;
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+/* Page text */
+.gridtable tfoot span {
+  font-weight: 500;
+  color: #555;
+}
+
+/* ===============================
+   PAGINATION BUTTONS
+================================= */
+.gridtable tfoot button {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.gridtable tfoot button:hover:not(:disabled) {
+  background-color: #dbeeff;
+}
+
+.gridtable tfoot button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   PAGE SIZE DROPDOWN
+================================= */
+.gridtable tfoot select {
+  font-size: 13px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+}
+
+/* ===============================
+   SEARCH INPUT GROUP
+================================= */
+.d-inline-flex input.form-control {
+  height: 30px;
+  font-size: 13px;
+}
+
+.d-inline-flex div {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+/* ===============================
+   SHADOW & RADIUS
+================================= */
+.shadow-lg {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+}
+
+.gridtable {
+  border-radius: 10px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gridtable thead,
+.gridtable tfoot {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.gridtable tbody {
+  display: block;
+  max-height: 430px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.gridtable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+
+/* ===============================
+   RESPONSIVE
+================================= */
+@media (max-width: 768px) {
+  .gridtable {
+    font-size: 12px;
+  }
+
+  .gridtable thead th,
+  .gridtable tbody td,
+  .gridtable tfoot td {
+    padding: 6px;
+  }
+
+  .gridtable tfoot span {
+    font-size: 12px;
+  }
+}

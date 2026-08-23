@@ -1,9 +1,72 @@
-
+import React, { useState } from "react";
 import "./Login.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { encryptAES128 } from "../../utils/encryptdecrypt";
+// import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function Login() {
+const Login = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        if (!email || !password) {
+            toast.error("Email and password are required.", {
+                position: "top-right",
+            });
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            const response = await fetch(
+                "https://localhost:5001/api/Auth/encryptLogin",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        Email: encryptAES128(email),
+                        Password: encryptAES128(password)
+                    }),
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                toast.error(result.message || "Login failed.", {
+                    position: "top-right",
+                });
+                return;
+            }
+
+            if(result.success && result.message !== ""){
+                navigate('/landingpage/dashboard');
+                localStorage.setItem("User",JSON.stringify(result));
+            }
+
+            setEmail("");
+            setPassword("");
+        } catch (error) {
+            toast.error("Unable to connect to the server.", {
+                position: "top-right",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <div className="login-container">
+            <ToastContainer />
+            {loading && <div className="loader"></div>}
             <div className="container">
                 <div className="row justify-content-center align-items-center min-vh-94">
 
@@ -64,6 +127,9 @@ function Login() {
                                                     type="email"
                                                     className="form-control"
                                                     placeholder="Enter email"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    autoComplete="true"
                                                 />
 
                                             </div>
@@ -76,6 +142,9 @@ function Login() {
                                                     type="password"
                                                     className="form-control"
                                                     placeholder="Enter password"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    autoComplete="true"
                                                 />
 
                                             </div>
@@ -101,6 +170,7 @@ function Login() {
 
                                             <button
                                                 className="btn btn-dark w-100 py-2"
+                                                onClick={handleLogin}
                                             >
                                                 Login
                                             </button>
@@ -125,21 +195,13 @@ function Login() {
 
                                             </button>
 
-                                            <button className="btn btn-outline-primary">
-
-                                                <i className="bi bi-facebook me-2"></i>
-
-                                                Continue with Facebook
-
-                                            </button>
-
                                         </div>
 
                                         <p className="text-center mt-4">
 
                                             Don't have an account?
 
-                                            <a href="/" className="ms-2">
+                                            <a href="/register" className="ms-2">
                                                 Register
                                             </a>
 

@@ -1,5 +1,8 @@
+using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
+using api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -24,27 +27,25 @@ builder.Services.AddControllers();
 // Add DbContext with SQL Server connection string
 builder.Services.AddDbContext<EcommerceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    // options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register Existing Services
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProduct_categoryService, Product_categoryService>();
-builder.Services.AddScoped<IProduct_categoryRepository, Product_categoryRepository>();
-builder.Services.AddScoped<IMenuService, MenuService>();
-builder.Services.AddScoped<IMenuRepository, MenuRepository>();
-builder.Services.AddScoped<ILoginService, LoginService>();
-builder.Services.AddScoped<ILoginRepository, LoginRepository>();
-builder.Services.AddScoped<IRoleMasterService, RoleMasterService>();
-builder.Services.AddScoped<IRoleMasterRepository, RoleMasterRepository>();
+
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<EncryptionService>();
+
+// Register Services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+builder.Services.AddScoped<IDynamicService, DynamicService>();
+builder.Services.AddScoped<IDynamicRepository, DynamicRepository>();
+
 
 // ADDED — Read XML API Method Mapping File
 var xmlFilePath = Path.Combine(builder.Environment.ContentRootPath, "Config.xml");
 XDocument apiMappings = XDocument.Load(xmlFilePath);
 builder.Services.AddSingleton(apiMappings);
 
-// ADDED — Register Dynamic Procedure Services
-builder.Services.AddScoped<IDynamicService, DynamicService>();
-builder.Services.AddScoped<IDynamicRepository, DynamicRepository>();
 
 var app = builder.Build();
 

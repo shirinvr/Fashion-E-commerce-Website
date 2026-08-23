@@ -1,0 +1,434 @@
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 45px;
+}
+
+.logo span {
+  color: #d9a441;
+}
+
+.menu-title {
+  font-size: 11px;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 25px 12px 12px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #aaa;
+  padding: 13px 14px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  transition: .2s;
+  font-size: 14px;
+}
+
+.nav a:hover,
+.nav a.active {
+  background: #d9a441;
+  color: #111;
+}
+
+.nav-icon {
+  width: 20px;
+  text-align: center;
+}
+
+.admin {
+  position: absolute;
+  bottom: 25px;
+  left: 20px;
+  right: 20px;
+  padding: 14px;
+  border-top: 1px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  background: #d9a441;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  font-weight: bold;
+}
+
+.admin small {
+  color: #888;
+}
+
+/* MAIN */
+.main {
+  width: 100%;
+  padding: 28px 35px;
+  box-shadow: 5px 0px 10px 5px #8888888a;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.header p {
+  color: #888;
+  font-size: 14px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 11px 15px;
+  width: 220px;
+  outline: none;
+}
+
+.notification {
+  width: 42px;
+  height: 42px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.dash-card {
+  background: white;
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid #eee;
+  box-shadow: 1px 3px 4px 0px grey;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.card-title {
+  color: #888;
+  font-size: 13px;
+}
+
+.card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #f8f0df;
+  color: #b17c1d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card h2 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.growth {
+  color: #2c9b62;
+  font-size: 12px;
+}
+
+/* GRID */
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 22px;
+  margin-bottom: 25px;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 1px 3px 4px 0px grey;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.panel-header h3 {
+  font-size: 17px;
+}
+
+.select {
+  border: 1px solid #eee;
+  background: #fafafa;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+/* CHART */
+.chart {
+  height: 260px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 12px;
+  border-bottom: 1px solid #eee;
+  padding: 10px 5px 0;
+}
+
+.bar-wrapper {
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar {
+  width: 55%;
+  max-width: 45px;
+  background: #e8d09b;
+  border-radius: 7px 7px 0 0;
+  transition: .3s;
+}
+
+.bar:hover {
+  background: #d9a441;
+}
+
+.bar-label {
+  color: #999;
+  font-size: 11px;
+}
+
+/* PRODUCTS */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.product-img {
+  width: 50px;
+  height: 55px;
+  border-radius: 9px;
+  object-fit: cover;
+  background: #eee;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-info h4 {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.product-info span {
+  color: #999;
+  font-size: 11px;
+}
+
+.price {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* TABLE */
+.table-panel {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 24px;
+  overflow-x: auto;
+  box-shadow: 1px 3px 4px 0px grey;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+th {
+  text-align: left;
+  color: #999;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  padding: 13px;
+  border-bottom: 1px solid #eee;
+}
+
+td {
+  padding: 16px 13px;
+  font-size: 13px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.customer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ead8b0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.delivered {
+  background: #e3f6eb;
+  color: #24804b;
+}
+
+.pending {
+  background: #fff4d9;
+  color: #aa7818;
+}
+
+.processing {
+  background: #e8efff;
+  color: #4c6fc5;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 750px) {
+  .sidebar {
+    width: 70px;
+    padding: 25px 10px;
+  }
+
+  .logo {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .logo span,
+  .nav a span:not(.nav-icon),
+  .menu-title,
+  .admin-info {
+    display: none;
+  }
+
+  .nav a {
+    justify-content: center;
+  }
+
+  .admin {
+    left: 10px;
+    right: 10px;
+    justify-content: center;
+  }
+
+  .main {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+    padding: 20px;
+  }
+
+  .header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header-right {
+    display: none;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 450px) {
+  .main {
+    padding: 15px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .panel,
+  .table-panel {
+    padding: 16px;
+  }
+}

@@ -24,7 +24,7 @@
     border-radius: 18px;
     padding: 30px;
     border: 1px solid #e9e9e9;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.04);
+    box-shadow: 1px 3px 4px 0px grey;
 }
 
 /* Profile Summary */
@@ -33,6 +33,7 @@
     text-align: center;
     position: sticky;
     top: 25px;
+    box-shadow: 1px 3px 4px 0px grey;
 }
 
 .profile-avatar {
@@ -232,6 +233,10 @@ textarea.form-control {
     display: flex;
     align-items: center;
     gap: 7px;
+}
+
+.add-icon{
+    justify-items: end;
 }
 
 /* Responsive */

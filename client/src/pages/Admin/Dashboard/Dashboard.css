@@ -107,7 +107,7 @@
 
 .search {
   background: white;
-  border: 1px solid #eee;
+  border: 1px solid #b1acac;
   border-radius: 10px;
   padding: 11px 15px;
   width: 220px;
@@ -119,6 +119,7 @@
   height: 42px;
   background: white;
   border-radius: 10px;
+  border: 1px solid #b1acac;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,7 +203,7 @@
 }
 
 .select {
-  border: 1px solid #eee;
+  border: 1px solid #b1acac;
   background: #fafafa;
   padding: 8px 12px;
   border-radius: 8px;
@@ -357,6 +358,14 @@ td {
 .processing {
   background: #e8efff;
   color: #4c6fc5;
+}
+
+.viewall-products {
+  color: #b17c1d;
+  font-size: 12px;
+  border: 2px solid lightgrey;
+  border-radius: 5px;
+  padding: 2px 6px;
 }
 
 /* RESPONSIVE */

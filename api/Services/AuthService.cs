@@ -72,7 +72,7 @@ namespace api.Services
 
             // 4. Normalize email
             // string email = EncryptionService.Encrypt(request.Email.Trim().ToLower());
-            string email = request.Email.Trim().ToLower();
+            string email = request.Email.Trim();
 
             // 5. Check whether email already exists
             bool emailExists = await _context.Users.AnyAsync(x => x.email.ToLower() == email);

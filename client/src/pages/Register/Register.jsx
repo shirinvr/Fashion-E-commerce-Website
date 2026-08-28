@@ -10,12 +10,20 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         if (!email || !password || !confirmPassword) {
             toast.error("Email and password are required.", {
+                position: "top-right",
+            });
+            return;
+        } else if (!emailRegex.test(email)) {
+
+            toast.error("Invalid Email", {
                 position: "top-right",
             });
             return;
@@ -25,7 +33,7 @@ const Register = () => {
             setLoading(true);
 
             const response = await fetch(
-                "https://localhost:5001/api/Auth/UserRegistration",
+                `${BASE_URL}/api/Auth/UserRegistration`,
                 {
                     method: "POST",
                     headers: {
@@ -85,7 +93,7 @@ const Register = () => {
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            autoComplete="true"
+                            autoComplete="email"
                         />
                     </div>
 

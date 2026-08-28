@@ -7,6 +7,10 @@
   <ApiMethod name="GetAllApprSettings"><StoredProcedure>ec.GetAllApprSettings</StoredProcedure></ApiMethod>
   <ApiMethod name="SaveApprovalSettingsUpdateDelete"><StoredProcedure>ec.usp_SaveApprovalSettingsUpdateDelete</StoredProcedure></ApiMethod>
   <ApiMethod name="Getallmenusbyrole"><StoredProcedure>dbo.usp_getallmenusbyrole</StoredProcedure></ApiMethod>
-
+  <ApiMethod name="GetCity"><StoredProcedure>dbo.usp_getCity</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetCountry"><StoredProcedure>dbo.usp_getCountry</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetState"><StoredProcedure>dbo.usp_getState</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetUserProfileById"><StoredProcedure>dbo.usp_getUserProfileById</StoredProcedure></ApiMethod>
+  <ApiMethod name="SaveUpdateUserProfile"><StoredProcedure>dbo.usp_SaveUpdateUserProfile</StoredProcedure></ApiMethod>
 
 </ApiProcedureMappings>

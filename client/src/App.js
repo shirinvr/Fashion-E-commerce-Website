@@ -12,7 +12,7 @@ function App() {
   return (
     <>
       <SessionTimeout
-        timeout={15 * 60 * 1000}
+        timeout={30 * 60 * 1000}
         onTimeout={handleSessionTimeout}
       />
 

@@ -67,7 +67,7 @@ const Dashboard = () => {
                             <div className="panel-header">
                                 <h3>Sales Overview</h3>
 
-                                <select className="select">
+                                <select className="select" name='select'>
                                     <option>Last 7 Months</option>
                                     <option>Last 30 Days</option>
                                     <option>This Year</option>
@@ -120,7 +120,7 @@ const Dashboard = () => {
 
                             <div className="panel-header">
                                 <h3>Top Products</h3>
-                                <span style={{fontSize:"12px",color:"#b17c1d;"}}>View all →</span>
+                                <span className='viewall-products'>View all →</span>
                             </div>
 
                             <div className="product-list">

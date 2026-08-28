@@ -1,74 +1,220 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./Profile.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { callDynamicApi } from "../../../shared/apiService.jsx";
 import { ApiMethodNames } from "../../../config/ServiceMapping.ts";
+import {
+    // encryptAES128,
+    decryptAES128
+} from "../../../utils/encryptdecrypt.js";
 
 const Profile = () => {
-    const [formData, setFormData] = useState({
-        userId: 1,
+    const [city, setCity] = useState([]);
+    const [country, setCountry] = useState([]);
+    const [state, setState] = useState([]);
+    const [userBasicDtl, setUserBasicDtl] = useState([]);
+    const [addressLineDtl, setAddressLineDtl] = useState([]);
+    const [addressLine, setAddressLine] = useState([]);
+    // const [userAddDtl, setUserAddDtl] = useState([]);
 
+    const user = JSON.parse(localStorage.getItem("User") || "{}");
+    const userId = user.userId;
+
+    const initialFormData = {
+        userId: 0,
         username: "",
         mobile: "",
         gender: "",
         dateOfBirth: "",
-
-        addressId: 0,
-        addressLineName: "Home",
+        address_id: 0,
+        addressLineName: "",
         addressLine: "",
-        cityId: "",
-        stateId: "",
-        countryId: "",
+        city_id: "",
+        state_id: "",
+        country_id: "",
         pincode: "",
         isDefault: true
-    });
+    };
 
+    const [formData, setFormData] = useState(initialFormData);
+
+
+    const getAllCity = useCallback(async (state_id) => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetCity, { state_id: state_id });
+
+            if (res.success === true) {
+                setCity(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
+    const getAllState = useCallback(async (country_id) => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetState, { country_id: country_id });
+
+            if (res.success === true) {
+                setState(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
+    const getAllCountry = useCallback(async () => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetCountry, {});
+
+            if (res.success === true) {
+                setCountry(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
+    const getUserProfileById = useCallback(async () => {
+        try {
+            const response = await callDynamicApi(
+                ApiMethodNames.GetUserProfileById,
+                {
+                    UserId: userId
+                }
+            );
+
+            if (response?.success === true) {
+                setUserBasicDtl(response.data?.result1?.[0] || {});
+                const result2 = response.data?.result2?.[0] || {};
+                setAddressLineDtl(response.data?.result3);
+                const result3 = response.data?.result3?.find((i) => {
+                    return i.isdefault === true;
+                }) || {};
+                setAddressLine(response.data?.result4);
+
+                const countryId = result3.countryid
+                    ? Number(result3.countryid)
+                    : "";
+
+                const stateId = result3.stateid
+                    ? Number(result3.stateid)
+                    : "";
+
+                setFormData({
+                    userId: result2.id,
+
+                    username: result2.username,
+                    email: decryptAES128(result2.email) || "",
+                    mobile: result2.mobileno || "",
+                    gender: result2.gender?.toString() || "",
+                    dateOfBirth: result2.date_of_birth ? result2.date_of_birth.substring(0, 10) : "",
+
+                    address_id: result3.address_id || 0,
+                    addressLineName: result3.addresslinename || "",
+                    addressLine: result3.addressline || "",
+                    city_id: result3.cityid || "",
+                    state_id: result3.stateid || "",
+                    country_id: result3.countryid || "",
+                    pincode: result3.pincode || "",
+                    isDefault: result3.isdefault ?? false
+                });
+
+                if (countryId) {
+                    await getAllState(countryId);
+                }
+
+                if (stateId) {
+                    await getAllCity(stateId);
+                }
+            }
+
+        } catch (err) {
+            console.error("Failed to fetch user profile :", err);
+        }
+    }, [userId, getAllState, getAllCity]);
+
+
+    useEffect(() => {
+        getUserProfileById();
+        getAllCountry();
+    }, [
+        getUserProfileById,
+        getAllCountry
+    ]);
 
     const handleChange = (e) => {
-
         const { name, value } = e.target;
 
         setFormData((prev) => ({
             ...prev,
             [name]: value
         }));
-
+        if (name === "country_id" && value !== "") {
+            getAllState(Number(value))
+        }
+        if (name === "state_id" && value !== "") {
+            getAllCity(Number(value))
+        }
     };
-    // const handleCheckboxChange = (e) => {
+    const handleAddrChange = (e) => {
+        const { name, value } = e.target;
 
-    //     const { name, checked } = e.target;
+        if (name === "address_id" && value !== "") {
+            const addr = addressLineDtl.find((i) => {
+                return i.address_id === Number(value)
+            });
 
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         [name]: checked
-    //     }));
+            setFormData((prev) => ({
+                ...prev,
+                ...{
+                    address_id: addr.address_id,
+                    addressLineName: addr.addresslinename,
+                    addressLine: addr.addressline,
+                    city_id: addr.cityid,
+                    state_id: addr.stateid,
+                    country_id: addr.countryid,
+                    pincode: addr.pincode,
+                    isDefault: addr.isdefault
+                }
+            }));
+        }
+    };
 
-    // };
+    const addNewAddress = () => {
+        setFormData((prev) => ({
+            ...prev,
+            ...{
+                address_id: "0",
+                addressLineName: "",
+                addressLine: "",
+                city_id: "0",
+                state_id: "0",
+                country_id: "0",
+                pincode: "",
+                isDefault: false
+            }
+        }));
+    }
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         try {
 
             const response = await callDynamicApi(ApiMethodNames.SaveUpdateUserProfile, { UserId: 1, profiledata: formData });
-
             if (response.data.success) {
-
                 toast.success(
-                    response.data.message || "Profile updated successfully.",
+                    (response.data.OutputMessage && response.data.ErrorStatus === 1) || "Profile updated successfully.",
                     {
                         position: "top-right"
                     }
                 );
-
             }
 
         } catch (error) {
-
             console.error(error);
-
             toast.error(
                 error.response?.data?.message ||
                 "Failed to update user details.",
@@ -76,7 +222,6 @@ const Profile = () => {
                     position: "top-right"
                 }
             );
-
         }
 
     };
@@ -107,7 +252,7 @@ const Profile = () => {
                             </div>
 
                             <h4>
-                                {formData.firstName} {formData.lastName}
+                                {formData.username}
                             </h4>
 
                             <p className="text-muted">
@@ -119,17 +264,17 @@ const Profile = () => {
                             <div className="profile-info">
                                 <div>
                                     <span>Member since</span>
-                                    <strong>August 2026</strong>
+                                    <strong>{userBasicDtl?.Membersincedate}</strong>
                                 </div>
 
                                 <div>
                                     <span>Orders</span>
-                                    <strong>12</strong>
+                                    <strong>{userBasicDtl?.OrderCount}</strong>
                                 </div>
 
                                 <div>
                                     <span>Wishlist</span>
-                                    <strong>8 Items</strong>
+                                    <strong>{userBasicDtl?.WishlistCount} Items</strong>
                                 </div>
                             </div>
 
@@ -182,12 +327,19 @@ const Profile = () => {
                                             <label>Mobile Number</label>
 
                                             <input
-                                                type="tel"
+                                                type="text"
                                                 name="mobile"
                                                 value={formData.mobile}
-                                                onChange={handleChange}
+                                                onChange={(e) => {
+                                                    const mobileVal = e.target.value;
+                                                    if (/^\d*$/.test(mobileVal)) {
+                                                        handleChange(e)
+                                                    }
+                                                }}
                                                 className="form-control"
                                                 placeholder="Enter mobile number"
+                                                maxLength={10}
+                                                inputMode="numeric"
                                             />
                                         </div>
 
@@ -233,6 +385,7 @@ const Profile = () => {
                                                 value={formData.dateOfBirth}
                                                 onChange={handleChange}
                                                 className="form-control"
+                                                onKeyDown={(e) => e.preventDefault()}
                                             />
                                         </div>
 
@@ -280,22 +433,7 @@ const Profile = () => {
 
                                         </div>
 
-                                        <div className="col-md-6">
 
-                                            <label>
-                                                Mobile Number
-                                            </label>
-
-                                            <input
-                                                type="tel"
-                                                name="mobile"
-                                                value={formData.mobile}
-                                                onChange={handleChange}
-                                                className="form-control"
-                                                placeholder="Enter mobile number"
-                                            />
-
-                                        </div>
 
                                     </div>
 
@@ -304,19 +442,32 @@ const Profile = () => {
                                 {/* Address */}
                                 <div className="form-section">
 
-                                    <div className="section-title">
+                                    <div className="row my-3">
+                                        <div className="col-md-10">
+                                            <div className="row">
+                                                <div className="col-md-1">
 
-                                        <div className="section-icon">
-                                            <i className="bi bi-geo-alt"></i>
+                                                    <div className="section-icon">
+                                                        <i className="bi bi-geo-alt"></i>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-11">
+
+
+                                                    <div>
+                                                        <h5>Address</h5>
+                                                        <span>
+                                                            Add your delivery address
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <h5>Address</h5>
-                                            <p>
-                                                Add your delivery address
-                                            </p>
+                                        <div className="col-md-2">
+                                            <button className="btn btn-primary" onClick={addNewAddress}><i className="bi bi-plus-circle-fill"></i></button>
                                         </div>
-
                                     </div>
 
                                     <div className="row g-3">
@@ -333,6 +484,25 @@ const Profile = () => {
                                                 className="form-control"
                                                 placeholder="Home / Office"
                                             />
+
+                                        </div>
+                                        <div className="col-md-6">
+
+                                            <label>Saved Address</label>
+
+                                            <select
+                                                name="address_id"
+                                                value={formData.address_id}
+                                                onChange={handleAddrChange}
+                                                className="form-select"
+                                            >
+                                                <option value="">Select address</option>
+                                                {addressLine.map(a =>
+                                                    <option key={a.address_id} value={a.address_id}>
+                                                        {a.addresslinename}
+                                                    </option>
+                                                )}
+                                            </select>
 
                                         </div>
 
@@ -352,40 +522,43 @@ const Profile = () => {
 
                                         </div>
 
-
                                         <div className="col-md-4">
 
-                                            <label>City</label>
+                                            <label>Country</label>
 
                                             <select
-                                                name="cityId"
-                                                value={formData.cityId}
+                                                name="country_id"
+                                                value={formData.country_id}
                                                 onChange={handleChange}
                                                 className="form-select"
                                             >
-                                                <option value="">Select City</option>
-                                                <option value="101">Thrissur</option>
-                                                <option value="102">Kochi</option>
-                                                <option value="103">Kozhikode</option>
+                                                <option value="">Select Country</option>
+                                                {country.map(c =>
+                                                    <option key={c.country_id} value={c.country_id}>
+                                                        {c.country_name}
+                                                    </option>
+                                                )}
                                             </select>
 
                                         </div>
-
 
                                         <div className="col-md-4">
 
                                             <label>State</label>
 
                                             <select
-                                                name="stateId"
-                                                value={formData.stateId}
+                                                name="state_id"
+                                                value={formData.state_id}
                                                 onChange={handleChange}
                                                 className="form-select"
+                                                placeholder="select state"
                                             >
-                                                <option value="">Select State</option>
-                                                <option value="18">Kerala</option>
-                                                <option value="19">Tamil Nadu</option>
-                                                <option value="20">Karnataka</option>
+                                                <option value="">Select state</option>
+                                                {state.map(s =>
+                                                    <option key={s.state_id} value={s.state_id}>
+                                                        {s.state_name}
+                                                    </option>
+                                                )}
                                             </select>
 
                                         </div>
@@ -393,16 +566,21 @@ const Profile = () => {
 
                                         <div className="col-md-4">
 
-                                            <label>Country</label>
+                                            <label>City</label>
 
                                             <select
-                                                name="countryId"
-                                                value={formData.countryId}
+                                                name="city_id"
+                                                value={formData.city_id}
                                                 onChange={handleChange}
                                                 className="form-select"
+                                                placeholder="select city"
                                             >
-                                                <option value="">Select Country</option>
-                                                <option value="1">India</option>
+                                                <option value="">Select city</option>
+                                                {city.map(c =>
+                                                    <option key={c.city_id} value={c.city_id}>
+                                                        {c.city_name}
+                                                    </option>
+                                                )}
                                             </select>
 
                                         </div>
@@ -416,9 +594,16 @@ const Profile = () => {
                                                 type="text"
                                                 name="pincode"
                                                 value={formData.pincode}
-                                                onChange={handleChange}
+                                                onChange={(e) => {
+                                                    const pinc = e.target.value;
+                                                    if (/^\d*$/.test(pinc)) {
+                                                        handleChange(e)
+                                                    }
+                                                }}
                                                 className="form-control"
                                                 placeholder="Enter pincode"
+                                                maxLength={6}
+                                                inputMode="numeric"
                                             />
 
                                         </div>

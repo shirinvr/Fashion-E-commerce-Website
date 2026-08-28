@@ -5,12 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { encryptAES128 } from "../../utils/encryptdecrypt";
 // import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import loginImg from "../../assets/images/login_img.jpg";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -26,7 +28,7 @@ const Login = () => {
             setLoading(true);
 
             const response = await fetch(
-                "https://localhost:5001/api/Auth/encryptLogin",
+                `${BASE_URL}/api/Auth/encryptLogin`,
                 {
                     method: "POST",
                     headers: {
@@ -92,8 +94,8 @@ const Login = () => {
 
                                         <div>
                                             <img
-                                                src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b"
-                                                alt=""
+                                                src={loginImg}
+                                                alt="loginimg"
                                                 className="img-fluid rounded"
                                             />
                                         </div>

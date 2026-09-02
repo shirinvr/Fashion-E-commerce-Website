@@ -3,7 +3,8 @@ import "./Register.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptAES128 } from "../../utils/encryptdecrypt";
-
+import { callDynamicApi } from "../../shared/apiService";
+import { ApiMethodNames } from "../../config/ServiceMapping.ts";
 
 const Register = () => {
     const [email, setEmail] = useState("");
@@ -19,12 +20,14 @@ const Register = () => {
         if (!email || !password || !confirmPassword) {
             toast.error("Email and password are required.", {
                 position: "top-right",
+                closeButton: false
             });
             return;
         } else if (!emailRegex.test(email)) {
 
             toast.error("Invalid Email", {
                 position: "top-right",
+                closeButton: false
             });
             return;
         }
@@ -52,13 +55,40 @@ const Register = () => {
             if (!response.ok) {
                 toast.error(result.message || "Registration failed.", {
                     position: "top-right",
+                    closeButton: false
                 });
                 return;
             }
 
             toast.success(result.message || "Registration successful.", {
                 position: "top-right",
+                closeButton: false
             });
+
+            try {
+
+                const response = await callDynamicApi(ApiMethodNames.SaveDefaultRole, { UserId: result.userId });
+                if (response.data.success) {
+                    toast.success(
+                        (response.data.OutputMessage && response.data.ErrorStatus === 1) || "Default role assigned successfully.",
+                        {
+                            position: "top-right",
+                            closeButton: false
+                        }
+                    );
+                }
+
+            } catch (error) {
+                console.error(error);
+                toast.error(
+                    error.response?.data?.message ||
+                    "Failed to assign default role.",
+                    {
+                        position: "top-right",
+                        closeButton: false
+                    }
+                );
+            }
 
             setEmail("");
             setPassword("");
@@ -66,6 +96,7 @@ const Register = () => {
         } catch (error) {
             toast.error("Unable to connect to the server.", {
                 position: "top-right",
+                closeButton: false
             });
         } finally {
             setLoading(false);
@@ -130,6 +161,9 @@ const Register = () => {
                         {loading ? "Registering..." : "Register"}
                     </button>
 
+                    <div className="login-link">
+                        <a href="/login">Already have an account? Login</a>
+                    </div>
                 </form>
             </div>
         </div>

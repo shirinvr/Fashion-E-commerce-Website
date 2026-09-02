@@ -6,6 +6,7 @@ export const ApiMethodNames = {
   GetAllApprTypes: "GetAllApprTypes",
   GetAllApprSettings: "GetAllApprSettings",
   SaveApprovalSettingsUpdateDelete: "SaveApprovalSettingsUpdateDelete",
+  SaveDefaultRole: "SaveDefaultRole",
   GetCity: "GetCity",
   GetCountry: "GetCountry",
   GetState: "GetState",

@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback, useState } from "react";
-// import axios from 'axios';
 import './SideBar.css';
 import { Link } from 'react-router-dom';
 import { callDynamicApi } from "../../shared/apiService";
@@ -7,11 +6,12 @@ import { ApiMethodNames } from "../../config/ServiceMapping.ts";
 
 const SideBar = () => {
     const [menus, setMenus] = useState([]);
-    // const user = [] localStorage.getItem(User);
+    const user = JSON.parse(localStorage.getItem("User") || "{}");
+    const userId = user.userId;
 
     const getAllMenus = useCallback(async () => {
         try {
-            const res = await callDynamicApi(ApiMethodNames.Getallmenusbyrole, { UserId: 1 });
+            const res = await callDynamicApi(ApiMethodNames.Getallmenusbyrole, { UserId: userId });
 
             if (res.success === true) {
                 setMenus(res.data.result1);
@@ -19,7 +19,7 @@ const SideBar = () => {
         } catch (err) {
             console.error(err);
         }
-    }, []);
+    }, [userId]);
 
     useEffect(() => {
         getAllMenus();

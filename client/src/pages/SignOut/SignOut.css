@@ -1,0 +1,117 @@
+/* Background overlay */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+/* Popup box */
+.dialog {
+    width: 400px;
+    max-width: 90%;
+    background-color: #ffffff;
+
+    padding: 30px;
+    border-radius: 12px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+    text-align: center;
+
+    animation: popup 0.2s ease-in-out;
+}
+
+/* Heading */
+.dialog h2 {
+    margin: 0 0 12px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #212529;
+}
+
+/* Message */
+.dialog p {
+    margin: 0 0 25px;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+/* Buttons container */
+.dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Common button styles */
+.dialog-actions button {
+    min-width: 100px;
+    padding: 10px 18px;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Cancel button */
+.dialog-actions button:first-child {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.dialog-actions button:first-child:hover {
+    background-color: #d6d8db;
+}
+
+/* Sign out button */
+.dialog-actions button:last-child {
+    background-color: #dc3545;
+    color: white;
+}
+
+.dialog-actions button:last-child:hover {
+    background-color: #bb2d3b;
+}
+
+/* Popup animation */
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .dialog {
+        width: 90%;
+        padding: 25px 20px;
+    }
+
+    .dialog-actions {
+        flex-direction: column;
+    }
+
+    .dialog-actions button {
+        width: 100%;
+    }
+}

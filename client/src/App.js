@@ -1,7 +1,7 @@
 import AppRoutes from "./routes/AppRoutes";
 import SessionTimeout from "./pages/SessionTimeout/SessionTimeout";
 
-function App() {
+const App = () => {
     const handleSessionTimeout = () => {
     localStorage.removeItem("User");
 

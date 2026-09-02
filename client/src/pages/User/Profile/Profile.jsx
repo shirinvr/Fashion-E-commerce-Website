@@ -208,7 +208,8 @@ const Profile = () => {
                 toast.success(
                     (response.data.OutputMessage && response.data.ErrorStatus === 1) || "Profile updated successfully.",
                     {
-                        position: "top-right"
+                        position: "top-right",
+                        closeButton: false
                     }
                 );
             }
@@ -219,7 +220,8 @@ const Profile = () => {
                 error.response?.data?.message ||
                 "Failed to update user details.",
                 {
-                    position: "top-right"
+                    position: "top-right",
+                    closeButton: false
                 }
             );
         }
@@ -609,7 +611,7 @@ const Profile = () => {
                                         </div>
 
 
-                                        <div className="col-md-6 d-flex align-items-center">
+                                        <div className="col-md-6 d-flex align-items-center checkbox">
 
                                             <div className="form-check">
 

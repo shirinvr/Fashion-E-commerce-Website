@@ -12,5 +12,6 @@
   <ApiMethod name="GetState"><StoredProcedure>dbo.usp_getState</StoredProcedure></ApiMethod>
   <ApiMethod name="GetUserProfileById"><StoredProcedure>dbo.usp_getUserProfileById</StoredProcedure></ApiMethod>
   <ApiMethod name="SaveUpdateUserProfile"><StoredProcedure>dbo.usp_SaveUpdateUserProfile</StoredProcedure></ApiMethod>
+  <ApiMethod name="SaveDefaultRole"><StoredProcedure>dbo.usp_SaveDefaultRole</StoredProcedure></ApiMethod>
 
 </ApiProcedureMappings>

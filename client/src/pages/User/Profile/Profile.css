@@ -190,8 +190,6 @@ textarea.form-control {
     align-items: center;
 
     gap: 12px;
-
-    flex-wrap: wrap;
 }
 
 .cancel-btn {
@@ -235,8 +233,8 @@ textarea.form-control {
     gap: 7px;
 }
 
-.add-icon{
-    justify-items: end;
+.checkbox {
+    padding-top: 2.5rem;
 }
 
 /* Responsive */

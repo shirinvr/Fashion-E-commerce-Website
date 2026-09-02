@@ -20,6 +20,7 @@ const Login = () => {
         if (!email || !password) {
             toast.error("Email and password are required.", {
                 position: "top-right",
+                closeButton: false
             });
             return;
         }
@@ -46,6 +47,7 @@ const Login = () => {
             if (!response.ok) {
                 toast.error(result.message || "Login failed.", {
                     position: "top-right",
+                    closeButton: false
                 });
                 return;
             }
@@ -60,6 +62,7 @@ const Login = () => {
         } catch (error) {
             toast.error("Unable to connect to the server.", {
                 position: "top-right",
+                closeButton: false
             });
         } finally {
             setLoading(false);
@@ -164,7 +167,7 @@ const Login = () => {
 
                                                 </div>
 
-                                                <a href="/">
+                                                <a href="/forgotpassword">
                                                     Forgot Password?
                                                 </a>
 

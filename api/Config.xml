@@ -13,5 +13,8 @@
   <ApiMethod name="GetUserProfileById"><StoredProcedure>dbo.usp_getUserProfileById</StoredProcedure></ApiMethod>
   <ApiMethod name="SaveUpdateUserProfile"><StoredProcedure>dbo.usp_SaveUpdateUserProfile</StoredProcedure></ApiMethod>
   <ApiMethod name="SaveDefaultRole"><StoredProcedure>dbo.usp_SaveDefaultRole</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetAllProductsForAdmin"><StoredProcedure>dbo.usp_getAllProductsForAdmin</StoredProcedure></ApiMethod>
+  <ApiMethod name="SaveUpdateDeleteProduct"><StoredProcedure>dbo.usp_SaveUpdateDeleteProduct</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetProductByIdAdmin"><StoredProcedure>dbo.usp_getUserProfileByIdAdmin</StoredProcedure></ApiMethod>
 
 </ApiProcedureMappings>

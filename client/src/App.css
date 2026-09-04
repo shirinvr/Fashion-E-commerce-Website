@@ -1,0 +1,10 @@
+.grid-filter {
+  display: inline-flex;
+}
+.grid-pagination-buttons {
+  display: inline-flex;
+}
+
+.grid-search-btn {
+  width: 50px;
+}

@@ -17,7 +17,7 @@ const Header = () => {
                     <li><a className="dropdown-item" href="/settings">Settings</a></li>
                     <li><a className="dropdown-item" href="/landingpage/profile">Profile</a></li>
                     <li><hr className="dropdown-divider" /></li>
-                    <li><a className="dropdown-item" href="/" onClick={() => setShowSignOutDialog(true)}>Sign out</a></li>
+                    <li><button className="dropdown-item" onClick={() => setShowSignOutDialog(true)}>Sign out</button></li>
                 </ul>
             </div>
 

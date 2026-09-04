@@ -1,8 +1,9 @@
 import AppRoutes from "./routes/AppRoutes";
 import SessionTimeout from "./pages/SessionTimeout/SessionTimeout";
+import "./App.css";
 
 const App = () => {
-    const handleSessionTimeout = () => {
+  const handleSessionTimeout = () => {
     localStorage.removeItem("User");
 
     // Redirect to login
@@ -12,7 +13,7 @@ const App = () => {
   return (
     <>
       <SessionTimeout
-        timeout={30 * 60 * 1000}
+        timeout={15 * 60 * 1000}
         onTimeout={handleSessionTimeout}
       />
 

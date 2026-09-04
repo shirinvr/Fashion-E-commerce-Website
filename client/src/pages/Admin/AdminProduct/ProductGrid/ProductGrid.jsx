@@ -1,80 +1,198 @@
-import React from 'react';
-import DataTable from './DataTable';
+import React, { useState, useEffect, useCallback } from "react";
+import GridTable from "../../../../shared/GridTable/GridTable";
+import { callDynamicApi } from "../../../../shared/apiService.jsx";
+import { ApiMethodNames } from "../../../../config/ServiceMapping.ts";
 
-export default function ProductsPage() {
-  // Column schema definition
+const ProductGrid = ({
+  searchValues = {},
+
+  currentPage = 1,
+  totalPages = 0,
+  totalCount = 0,
+
+  pageSize = 10,
+  pageSizeOptions = [10, 25, 50, 100],
+
+  loading = false,
+
+  onSearchChange,
+  onSearchClick,
+
+  onPageChange,
+  onPageSizeChange,
+
+  onEdit,
+  onDelete,
+}) => {
+  const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectionEnabled, setSelectionEnabled] = useState(false);
+
+  /*
+   * ============================================================
+   * Product Grid Columns
+   * ============================================================
+   */
+
   const columns = [
-    { key: 'id', label: 'ID', sortable: true },
     {
-      key: 'name',
-      label: 'Product Name',
-      sortable: true,
-      render: (row) => (
-        <div className="flex items-center gap-3">
-          <img src={row.image} alt={row.name} className="w-8 h-10 object-cover rounded bg-gray-100" />
-          <span className="font-medium text-gray-900">{row.name}</span>
+      fieldname: "slNo",
+      text: "Sl.No",
+      filterable: false,
+      width: "70px",
+
+      render: (_, rowIndex) => {
+        return (
+          (currentPage - 1) * pageSize +
+          rowIndex +
+          1
+        );
+      }
+    },
+
+    {
+      fieldname: "name",
+      text: "Product",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search product...",
+      width: "200px"
+    },
+
+    {
+      fieldname: "description",
+      text: "Description",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search description...",
+      width: "200px"
+    },
+
+    {
+      fieldname: "category_name",
+      text: "Category",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search category...",
+      width: "200px"
+    },
+
+    {
+      fieldname: "price",
+      text: "Price",
+      filterable: true,
+      filterType: "number",
+      filterPlaceholder: "Search price...",
+      width: "200px",
+
+      render: (product) => {
+        if (
+          product.price === null ||
+          product.price === undefined ||
+          product.price === ""
+        ) {
+          return "";
+        }
+
+        return `₹${Number(product.price).toFixed(2)}`;
+      },
+    },
+
+    {
+      fieldname: "Actions",
+      text: "Actions",
+      filterable: false,
+      width: "100px",
+
+      render: (product) => (
+        <div>
+
+          <button
+            type="button"
+            className="btn btn-link p-0"
+            title="Edit Product"
+            onClick={() => onEdit?.(product)}
+          >
+            <i className="bi bi-pencil-square text-primary fs-5"></i>
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-link p-0"
+            title="Delete Product"
+            onClick={() => onDelete?.(product)}
+          >
+            <i className="bi bi-trash text-danger fs-5"></i>
+          </button>
         </div>
-      ),
-    },
-    { key: 'category', label: 'Category', sortable: true },
-    {
-      key: 'price',
-      label: 'Price',
-      sortable: true,
-      render: (row) => `$${Number(row.price).toFixed(2)}`,
-    },
-    {
-      key: 'stock',
-      label: 'Stock',
-      sortable: true,
-      render: (row) => (
-        <span className={row.stock < 10 ? 'text-red-500 font-semibold' : 'text-gray-700'}>
-          {row.stock} units
-        </span>
-      ),
-    },
+      )
+    }
   ];
 
-  // Server-side fetch function (calls your backend endpoint)
-  const fetchProducts = async ({ page, limit, search, sortBy, sortOrder }) => {
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: String(limit),
-      search: search || '',
-      sortBy: sortBy || '',
-      sortOrder: sortOrder || '',
-    });
+  const getAllProducts = useCallback(async () => {
+    try {
+      const res = await callDynamicApi(ApiMethodNames.GetCity, {});
 
-    const response = await fetch(`/api/admin/products?${params.toString()}`);
-    return await response.json(); // Expected format: { data: [...], total: 120 }
-  };
-
-  // CRUD actions
-  const handleAddProduct = () => {
-    console.log("Open 'Add Product' modal");
-  };
-
-  const handleEditProduct = (row) => {
-    console.log("Edit product:", row);
-  };
-
-  const handleDeleteProduct = async (row) => {
-    if (window.confirm(`Delete product "${row.name}"?`)) {
-      await fetch(`/api/admin/products/${row.id}`, { method: 'DELETE' });
-      // Trigger a state reload or rely on a global cache like React Query
+      if (res.success === true) {
+        setProducts(res.data.result1);
+      }
+    } catch (err) {
+      console.error(err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    getAllProducts();
+    setSelectionEnabled(true);
+  }, [getAllProducts]);
+
+  /*
+   * ============================================================
+   * Render
+   * ============================================================
+   */
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <DataTable
-        title="Product Inventory"
-        columns={columns}
-        fetchData={fetchProducts}
-        onAdd={handleAddProduct}
-        onEdit={handleEditProduct}
-        onDelete={handleDeleteProduct}
-      />
+    <div className="row">
+
+      <div className="col-md-12 py-4">
+        <GridTable
+          columns={columns}
+          data={products}
+          // Selection
+          selectable={selectionEnabled}
+          selectedRows={selectedProducts}
+          onSelectionChange={setSelectedProducts}
+          rowKey="id"
+          isRowSelectable={(row) =>
+            row.status === "ACTIVE"
+          }
+
+          searchValues={searchValues}
+          onSearchChange={onSearchChange}
+          onSearchClick={onSearchClick}
+
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalCount={totalCount}
+
+          pageSize={pageSize}
+          pageSizeOptions={pageSizeOptions}
+
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+
+          loading={loading}
+
+          emptyMessage="No products found"
+          showPagination={true}
+          showTotal={true}
+          searchOnEnter={true}
+        />
+      </div>
     </div>
+
   );
-}
+};
+
+export default ProductGrid;

@@ -8,7 +8,7 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import WishList from "../pages/User/WishList/WishList";
 import Cart from "../pages/User/Cart/Cart";
 import Checkout from "../pages/User/CheckOut/CheckOut";
-
+import ProductGrid from "../pages/Admin/AdminProduct/ProductGrid/ProductGrid";
 
 const AppRoutes = () => {
     return (

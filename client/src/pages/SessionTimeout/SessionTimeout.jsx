@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 
 const SessionTimeout = ({
   timeout = 15 * 60 * 1000, // 15 minutes
   onTimeout,
 }) => {
   const [showPopup, setShowPopup] = useState(false);
-
+const timerRef = useRef(null);
   useEffect(() => {
     let timer;
 
@@ -19,8 +19,9 @@ const SessionTimeout = ({
     const resetTimer = () => {
       if (showPopup) return;
 
-      clearTimeout(timer);
-      timer = setTimeout(handleTimeout, timeout);
+      clearTimeout(timerRef.current);
+
+      timerRef.current = setTimeout(handleTimeout, timeout);
     };
 
     const events = [
@@ -39,7 +40,7 @@ const SessionTimeout = ({
     resetTimer();
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timerRef.current);
 
       events.forEach((event) => {
         window.removeEventListener(event, resetTimer);
@@ -48,11 +49,7 @@ const SessionTimeout = ({
   }, [timeout, showPopup]);
 
   const handleOk = () => {
-    setShowPopup(false);
-
-    if (onTimeout) {
-      onTimeout();
-    }
+      onTimeout?.();
   };
 
   if (!showPopup) {

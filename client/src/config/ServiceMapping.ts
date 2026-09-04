@@ -1,4 +1,3 @@
-// src/config/servicemapping.ts
 export const ApiMethodNames = {
   GetAllCategories: "GetAllCategories",
   Getallmenusbyrole: "Getallmenusbyrole",
@@ -12,4 +11,7 @@ export const ApiMethodNames = {
   GetState: "GetState",
   GetUserProfileById: "GetUserProfileById",
   SaveUpdateUserProfile: "SaveUpdateUserProfile",
+  GetAllProductsForAdmin: "GetAllProductsForAdmin",
+  SaveUpdateDeleteProduct: "SaveUpdateDeleteProduct",
+  GetProductByIdAdmin: "GetProductByIdAdmin",
 } as const;

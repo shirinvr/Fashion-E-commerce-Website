@@ -22,7 +22,7 @@ const SignOut = ({ open, onClose }) => {
 
                 <p>Are you sure you want to sign out?</p>
 
-                <div className="dialog-hgfhfghfghgfhggfghgfhfgactions">
+                <div className="dialog-actions">
                     <button onClick={onClose}>Cancel</button>
                     <button onClick={onConfirm}>Sign Out</button>
                 </div>

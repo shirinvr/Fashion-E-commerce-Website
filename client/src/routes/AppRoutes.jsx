@@ -8,7 +8,10 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import WishList from "../pages/User/WishList/WishList";
 import Cart from "../pages/User/Cart/Cart";
 import Checkout from "../pages/User/CheckOut/CheckOut";
+import Orders from "../pages/User/Orders/Orders";
 import ProductGrid from "../pages/Admin/AdminProduct/ProductGrid/ProductGrid";
+import AddProductPage from "../pages/Admin/AdminProduct/AddEditViewProduct/AddEditViewProduct";
+
 
 const AppRoutes = () => {
     return (
@@ -27,6 +30,8 @@ const AppRoutes = () => {
                     <Route path="cart" element={<Cart />} />
                     <Route path="checkout" element={<Checkout />} />
                     <Route path="products" element={<ProductGrid />} />
+                    <Route path="addproducts" element={<AddProductPage />} />
+                    <Route path="orders" element={<Orders />} />
                 </Route>
             </Routes>
         </BrowserRouter>

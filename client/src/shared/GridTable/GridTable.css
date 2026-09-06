@@ -143,18 +143,27 @@
   border-collapse: collapse;
 }
 
-.gridtable thead,
-.gridtable tfoot {
+
+.gridtable thead {
+  overflow-x: scroll;
   display: table;
-  width: 100%;
+  width: 70%;
   table-layout: fixed;
 }
 
 .gridtable tbody {
   display: block;
+  min-height: 400px;
   max-height: 430px;
   overflow-y: auto;
   width: 100%;
+  overflow-x: scroll;
+}
+
+.gridtable tfoot {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .gridtable tbody tr {

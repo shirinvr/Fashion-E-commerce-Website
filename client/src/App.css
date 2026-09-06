@@ -1,8 +1,27 @@
 .grid-filter {
   display: inline-flex;
 }
+
 .grid-pagination-buttons {
   display: inline-flex;
+  margin-left: 60px;
+}
+
+.grid-action-btn {
+  width: 125px;
+  padding: 5px 3px;
+  border-radius: 4px;
+  margin: 0px 3px;
+  background-color: rgba(239, 167, 216, 0.503);
+}
+
+.grid-action-btn:hover {
+  width: 125px;
+  padding: 5px 3px;
+  border-radius: 4px;
+  margin: 0px 3px;
+  background-color: white;
+  color: rgba(239, 167, 216, 0.503);
 }
 
 .grid-search-btn {

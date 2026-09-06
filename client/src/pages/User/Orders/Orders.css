@@ -1,5 +1,7 @@
 .orders-page {
-    min-height: 100vh;
+    height: 600px;
+    max-height: 600px;
+    overflow-y: scroll;
 }
 
 /* Header */
@@ -32,9 +34,8 @@
 /* Container */
 
 .orders-container {
-    max-width: 1200px;
-    margin: auto;
     padding: 35px 7% 60px;
+    background-color: white;
 }
 
 /* Tabs */

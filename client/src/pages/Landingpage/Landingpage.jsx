@@ -10,11 +10,11 @@ const Landing = () => {
             <Header />
 
             <div className="row px-0 mx-0">
-                <div className="col-md-1 px-0 sidebar">
+                <div className="col-md-2 px-0 sidebar">
                     <SideBar />
                 </div>
 
-                <div className="col-md-11 Grid">
+                <div className="col-md-10 Grid">
                     <Outlet />
                 </div>
             </div>

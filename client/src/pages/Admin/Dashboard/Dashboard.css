@@ -1,3 +1,9 @@
+.main {
+  height: 600px;
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
 .dashboard {
   display: flex;
   min-height: 100vh;

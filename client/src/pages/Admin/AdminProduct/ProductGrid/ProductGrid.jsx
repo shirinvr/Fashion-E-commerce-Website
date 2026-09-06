@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import GridTable from "../../../../shared/GridTable/GridTable";
 import { callDynamicApi } from "../../../../shared/apiService.jsx";
 import { ApiMethodNames } from "../../../../config/ServiceMapping.ts";
+import { useNavigate } from "react-router-dom";
 
 const ProductGrid = ({
   searchValues = {},
@@ -21,12 +22,28 @@ const ProductGrid = ({
   onPageChange,
   onPageSizeChange,
 
+  onAdd,
   onEdit,
+  onView,
   onDelete,
+  onDownload,
 }) => {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectionEnabled, setSelectionEnabled] = useState(false);
+  const canAdd = true;
+  const canEdit = true;
+  const canDelete = true;
+  const canView = true;
+  const canDownload = true;
+  const actions = [
+    ...(canAdd ? ["Add"] : []),
+    ...(canEdit ? ["Edit"] : []),
+    ...(canDelete ? ["Delete"] : []),
+    ...(canView ? ["View"] : []),
+    ...(canDownload ? ["Download"] : []),
+  ];
+  const navigate = useNavigate();
 
   /*
    * ============================================================
@@ -76,6 +93,38 @@ const ProductGrid = ({
       filterPlaceholder: "Search category...",
       width: "200px"
     },
+    {
+      fieldname: "category_name",
+      text: "Category",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search category...",
+      width: "200px"
+    },
+    {
+      fieldname: "category_name",
+      text: "Category",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search category...",
+      width: "200px"
+    },
+    {
+      fieldname: "category_name",
+      text: "Category",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search category...",
+      width: "200px"
+    },
+    {
+      fieldname: "category_name",
+      text: "Category",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search category...",
+      width: "200px"
+    },
 
     {
       fieldname: "price",
@@ -98,36 +147,80 @@ const ProductGrid = ({
       },
     },
 
-    {
-      fieldname: "Actions",
-      text: "Actions",
-      filterable: false,
-      width: "100px",
+    // {
+    //   fieldname: "Actions",
+    //   text: "Actions",
+    //   filterable: false,
+    //   width: "100px",
 
-      render: (product) => (
-        <div>
+    //   render: (product) => (
+    //     <div>
 
-          <button
-            type="button"
-            className="btn btn-link p-0"
-            title="Edit Product"
-            onClick={() => onEdit?.(product)}
-          >
-            <i className="bi bi-pencil-square text-primary fs-5"></i>
-          </button>
+    //       <button
+    //         type="button"
+    //         className="btn btn-link p-0"
+    //         title="Edit Product"
+    //         onClick={() => onEdit?.(product)}
+    //       >
+    //         <i className="bi bi-pencil-square text-primary fs-5"></i>
+    //       </button>
 
-          <button
-            type="button"
-            className="btn btn-link p-0"
-            title="Delete Product"
-            onClick={() => onDelete?.(product)}
-          >
-            <i className="bi bi-trash text-danger fs-5"></i>
-          </button>
-        </div>
-      )
-    }
+    //       <button
+    //         type="button"
+    //         className="btn btn-link p-0"
+    //         title="Delete Product"
+    //         onClick={() => onDelete?.(product)}
+    //       >
+    //         <i className="bi bi-trash text-danger fs-5"></i>
+    //       </button>
+    //     </div>
+    //   )
+    // }
   ];
+  const handleAdd = useCallback(() => {
+    navigate("/landingpage/addproducts");
+  }, [navigate]);
+
+  const handleAction = useCallback(
+    (action) => {
+      console.log("Action:", action);
+      console.log("Selected products:", selectedProducts);
+
+      switch (action) {
+        case "Add":
+          handleAdd();
+          break;
+
+        case "Edit":
+          onEdit?.(selectedProducts);
+          break;
+
+        case "Delete":
+          onDelete?.(selectedProducts);
+          break;
+
+        case "View":
+          onView?.(selectedProducts);
+          break;
+
+        case "Download":
+          onDownload?.(selectedProducts);
+          break;
+
+        default:
+          console.log(`Unknown action: ${action}`);
+          break;
+      }
+    },
+    [
+      selectedProducts,
+      handleAdd,
+      onEdit,
+      onDelete,
+      onView,
+      onDownload,
+    ]
+  );
 
   const getAllProducts = useCallback(async () => {
     try {
@@ -146,6 +239,7 @@ const ProductGrid = ({
     setSelectionEnabled(true);
   }, [getAllProducts]);
 
+
   /*
    * ============================================================
    * Render
@@ -155,7 +249,7 @@ const ProductGrid = ({
   return (
     <div className="row">
 
-      <div className="col-md-12 py-4">
+      <div className="col-md-12">
         <GridTable
           columns={columns}
           data={products}
@@ -188,6 +282,8 @@ const ProductGrid = ({
           showPagination={true}
           showTotal={true}
           searchOnEnter={true}
+          actions={actions}
+          onAction={handleAction}
         />
       </div>
     </div>

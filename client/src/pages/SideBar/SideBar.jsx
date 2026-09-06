@@ -36,6 +36,7 @@ const SideBar = () => {
                             className="nav-link py-3 px-4 border-bottom"
                         >
                             <i className={menu.menu_icon}></i>
+                            {menu.menu_name}
                         </Link>
                         <span className="tooltiptext">
                             {menu.menu_name}

@@ -1,8 +1,8 @@
 .Grid {
     background-color: #00000014;
-    height: 633px;
-    max-height: 633px;
-    overflow-y: scroll;
+    height: 631px;
+    max-height: 631px;
+    padding-top: 15px;
 }
 .sidebar {
     background-color: #00000014;

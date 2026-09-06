@@ -106,7 +106,7 @@ const Wishlist = () => {
                 </div>
 
                 {/* Product Details */}
-                <div className="product-details">
+                <div className="wishlist-product-details">
                   <p className="product-brand">{item.brand}</p>
                   <h3>{item.name}</h3>
 

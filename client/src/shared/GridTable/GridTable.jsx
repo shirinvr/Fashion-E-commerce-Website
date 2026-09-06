@@ -33,11 +33,23 @@ const GridTable = ({
   showPagination = true,
   showTotal = true,
   className = "",
+  // Actions 
+  actions = [],
+  onAction = () => { },
 }) => {
   const handleSearchKeyDown = (e, fieldName) => {
     if (searchOnEnter && e.key === "Enter") {
       onSearchClick(fieldName);
     }
+  };
+
+  // ========================================================= // ACTION CONFIGURATION // ========================================================= 
+  const actionConfig = {
+    Add: { label: "Add", icon: "bi bi-plus-lg", className: "grid-action-add", title: "Add", },
+    Edit: { label: "Edit", icon: "bi bi-pencil", className: "grid-action-edit", title: "Edit", },
+    Delete: { label: "Delete", icon: "bi bi-trash", className: "grid-action-delete", title: "Delete", },
+    View: { label: "View", icon: "bi bi-eye", className: "grid-action-view", title: "View", },
+    Download: { label: "Download", icon: "bi bi-download", className: "grid-action-download", title: "Download", },
   };
 
   const renderFilter = (column) => {
@@ -188,18 +200,36 @@ const GridTable = ({
     return value ?? column.defaultValue ?? "";
   };
 
+  // ========================================================= // ACTION RENDER // ========================================================= 
+  const renderActions = () => {
+    if (!actions || actions.length === 0) { return null; }
+    return (
+      <div className="grid-actions"> {
+        actions.map((action, index) => {
+          // actions = { ["Add", "Edit", "Delete"]}
+          const actionName = typeof action === "string" ? action : action.name;
+          const defaultConfig = actionConfig[actionName] || {};
+          const actionLabel = typeof action === "string" ? defaultConfig.label || action : action.label || action.name;
+          const actionIcon = typeof action === "string" ? defaultConfig.icon : action.icon || defaultConfig.icon;
+          const actionClass = typeof action === "string" ? defaultConfig.className : action.className || defaultConfig.className;
+          const actionTitle = typeof action === "string" ? defaultConfig.title || action : action.title || action.label || action.name;
+          return (
+            <button key={`${actionName}-${index}`} type="button" className={`grid-action-btn ${actionClass || ""}`}
+              title={actionTitle} onClick={() => onAction(actionName, action)} > {actionIcon && (<i className={`${actionIcon} me-1`} ></i>
+
+              )}
+              {actionLabel} </button>);
+        })} </div>);
+  };
+
   return (
     <div className={`gridtable-wrapper ${className}`}>
-      <div>
-        <div>Add</div>
-        <div>Edit</div>
-        <div>Delete</div>
-        <div>View</div>
-        <div>Download</div>
 
-      </div>
-      <table className="gridtable shadow-lg">
+      {/* ================= ACTIONS ================= */}
+      {renderActions()}
 
+      {/* ================= Table ================= */}
+      <table className="gridtable shadow-lg my-2">
         {/* ================= HEADER ================= */}
         <thead>
           <tr>
@@ -354,7 +384,7 @@ const GridTable = ({
             <tr>
 
               {/* Page information */}
-              <td colSpan={Math.max(columns.length - 3, 1)}>
+              <td colSpan={Math.max(columns.length, 1)}>
                 <div className="grid-pagination-info">
 
                   <span>
@@ -370,8 +400,10 @@ const GridTable = ({
                 </div>
               </td>
 
-              {/* Page size */}
-              <td>
+
+
+              <td colSpan="2">
+                {/* Page size */}
                 <select
                   className=""
                   value={pageSize}
@@ -390,10 +422,8 @@ const GridTable = ({
                     </option>
                   ))}
                 </select>
-              </td>
 
-              {/* Navigation */}
-              <td colSpan="2">
+                {/* Navigation */}
                 <div className="grid-pagination-buttons">
 
                   <button

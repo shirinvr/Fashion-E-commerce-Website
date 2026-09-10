@@ -116,11 +116,12 @@ const Register = () => {
                 <form onSubmit={handleSubmit} className="register-form">
 
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
+                        <label className="register-label" htmlFor="email">Email</label>
 
                         <input
                             id="email"
                             type="email"
+                            className="reg-input"
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -129,11 +130,12 @@ const Register = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="password">Password</label>
+                        <label className="register-label" htmlFor="password">Password</label>
 
                         <input
                             id="password"
                             type="password"
+                            className="reg-input"
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -141,11 +143,12 @@ const Register = () => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password">Confirm Password</label>
+                        <label className="register-label" htmlFor="password">Confirm Password</label>
 
                         <input
                             id="confirmpassword"
                             type="password"
+                            className="reg-input"
                             placeholder="Enter your password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}

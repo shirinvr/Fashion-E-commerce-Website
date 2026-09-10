@@ -94,7 +94,7 @@ const CheckOut = () => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="checkout-checkout-form-group">
               <label>Email Address</label>
               <input
                 type="email"
@@ -121,9 +121,9 @@ const CheckOut = () => {
               </div>
             </div>
 
-            <div className="form-grid">
+            <div className="checkout-checkout-form-grid">
 
-              <div className="form-group">
+              <div className="checkout-checkout-form-group">
                 <label>First Name</label>
                 <input
                   type="text"
@@ -132,7 +132,7 @@ const CheckOut = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="checkout-checkout-form-group">
                 <label>Last Name</label>
                 <input
                   type="text"
@@ -141,7 +141,7 @@ const CheckOut = () => {
                 />
               </div>
 
-              <div className="form-group full">
+              <div className="checkout-checkout-form-group full">
                 <label>Phone Number</label>
                 <input
                   type="tel"
@@ -150,7 +150,7 @@ const CheckOut = () => {
                 />
               </div>
 
-              <div className="form-group full">
+              <div className="checkout-checkout-form-group full">
                 <label>Address</label>
                 <input
                   type="text"
@@ -159,7 +159,7 @@ const CheckOut = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="checkout-checkout-form-group">
                 <label>City</label>
                 <input
                   type="text"
@@ -168,7 +168,7 @@ const CheckOut = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="checkout-checkout-form-group">
                 <label>State</label>
                 <select required defaultValue="">
                   <option value="" disabled>
@@ -183,7 +183,7 @@ const CheckOut = () => {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div className="checkout-checkout-form-group">
                 <label>PIN Code</label>
                 <input
                   type="text"
@@ -192,7 +192,7 @@ const CheckOut = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="checkout-checkout-form-group">
                 <label>Country</label>
                 <select defaultValue="India">
                   <option>India</option>
@@ -309,7 +309,7 @@ const CheckOut = () => {
 
             {paymentMethod === "upi" && (
               <div className="payment-box">
-                <div className="form-group">
+                <div className="checkout-checkout-form-group">
                   <label>UPI ID</label>
                   <input
                     type="text"
@@ -327,7 +327,7 @@ const CheckOut = () => {
 
             {paymentMethod === "card" && (
               <div className="payment-box">
-                <div className="form-group">
+                <div className="checkout-checkout-form-group">
                   <label>Card Number</label>
                   <input
                     type="text"
@@ -336,8 +336,8 @@ const CheckOut = () => {
                   />
                 </div>
 
-                <div className="form-grid">
-                  <div className="form-group">
+                <div className="checkout-checkout-form-grid">
+                  <div className="checkout-checkout-form-group">
                     <label>Expiry Date</label>
                     <input
                       type="text"
@@ -346,7 +346,7 @@ const CheckOut = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="checkout-checkout-form-group">
                     <label>CVV</label>
                     <input
                       type="password"

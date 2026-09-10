@@ -74,11 +74,12 @@ const ForgotPassword = () => {
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="email">Email Address</label>
+                        <label className="forgot-label" htmlFor="email">Email Address</label>
 
                         <input
                             id="email"
                             type="email"
+                            className="forgot-input"
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -86,7 +87,7 @@ const ForgotPassword = () => {
                         />
                     </div>
 
-                    <button type="submit" disabled={loading}>
+                    <button className="forgot-btn" type="submit" disabled={loading}>
                         {loading ? "Sending..." : "Send Reset Link"}
                     </button>
                 </form>

@@ -292,7 +292,7 @@ const Profile = () => {
                             <form onSubmit={handleSubmit}>
 
                                 {/* Personal Information */}
-                                <div className="form-section">
+                                <div className="profile-form-section">
 
                                     <div className="section-title">
                                         <div className="section-icon">
@@ -318,7 +318,7 @@ const Profile = () => {
                                                 name="username"
                                                 value={formData.username}
                                                 onChange={handleChange}
-                                                className="form-control"
+                                                className="profile-form-control"
                                                 placeholder="Enter username"
                                             />
                                         </div>
@@ -338,7 +338,7 @@ const Profile = () => {
                                                         handleChange(e)
                                                     }
                                                 }}
-                                                className="form-control"
+                                                className="profile-form-control"
                                                 placeholder="Enter mobile number"
                                                 maxLength={10}
                                                 inputMode="numeric"
@@ -354,7 +354,7 @@ const Profile = () => {
                                                 name="gender"
                                                 value={formData.gender}
                                                 onChange={handleChange}
-                                                className="form-select"
+                                                className="profile-form-select"
                                             >
                                                 <option value="">Select Gender</option>
 
@@ -386,7 +386,7 @@ const Profile = () => {
                                                 name="dateOfBirth"
                                                 value={formData.dateOfBirth}
                                                 onChange={handleChange}
-                                                className="form-control"
+                                                className="profile-form-control"
                                                 onKeyDown={(e) => e.preventDefault()}
                                             />
                                         </div>
@@ -396,7 +396,7 @@ const Profile = () => {
                                 </div>
 
                                 {/* Contact Information */}
-                                <div className="form-section">
+                                <div className="profile-form-section">
 
                                     <div className="section-title">
 
@@ -425,7 +425,7 @@ const Profile = () => {
                                                 type="email"
                                                 name="email"
                                                 value={formData.email}
-                                                className="form-control"
+                                                className="profile-form-control"
                                                 disabled
                                             />
 
@@ -442,7 +442,7 @@ const Profile = () => {
                                 </div>
 
                                 {/* Address */}
-                                <div className="form-section">
+                                <div className="profile-form-section">
 
                                     <div className="row my-3">
                                         <div className="col-md-10">
@@ -483,7 +483,7 @@ const Profile = () => {
                                                 name="addressLineName"
                                                 value={formData.addressLineName}
                                                 onChange={handleChange}
-                                                className="form-control"
+                                                className="profile-form-control"
                                                 placeholder="Home / Office"
                                             />
 
@@ -496,7 +496,7 @@ const Profile = () => {
                                                 name="address_id"
                                                 value={formData.address_id}
                                                 onChange={handleAddrChange}
-                                                className="form-select"
+                                                className="profile-form-select"
                                             >
                                                 <option value="">Select address</option>
                                                 {addressLine.map(a =>
@@ -517,7 +517,7 @@ const Profile = () => {
                                                 name="addressLine"
                                                 value={formData.addressLine}
                                                 onChange={handleChange}
-                                                className="form-control"
+                                                className="profile-form-control"
                                                 rows="3"
                                                 placeholder="Enter your address"
                                             />
@@ -532,7 +532,7 @@ const Profile = () => {
                                                 name="country_id"
                                                 value={formData.country_id}
                                                 onChange={handleChange}
-                                                className="form-select"
+                                                className="profile-form-select"
                                             >
                                                 <option value="">Select Country</option>
                                                 {country.map(c =>
@@ -552,7 +552,7 @@ const Profile = () => {
                                                 name="state_id"
                                                 value={formData.state_id}
                                                 onChange={handleChange}
-                                                className="form-select"
+                                                className="profile-form-select"
                                                 placeholder="select state"
                                             >
                                                 <option value="">Select state</option>
@@ -574,7 +574,7 @@ const Profile = () => {
                                                 name="city_id"
                                                 value={formData.city_id}
                                                 onChange={handleChange}
-                                                className="form-select"
+                                                className="profile-form-select"
                                                 placeholder="select city"
                                             >
                                                 <option value="">Select city</option>
@@ -602,7 +602,7 @@ const Profile = () => {
                                                         handleChange(e)
                                                     }
                                                 }}
-                                                className="form-control"
+                                                className="profile-form-control"
                                                 placeholder="Enter pincode"
                                                 maxLength={6}
                                                 inputMode="numeric"
@@ -613,7 +613,7 @@ const Profile = () => {
 
                                         <div className="col-md-6 d-flex align-items-center checkbox">
 
-                                            <div className="form-check">
+                                            <div className="profile-form-check">
 
                                                 <input
                                                     type="checkbox"
@@ -625,12 +625,12 @@ const Profile = () => {
                                                             isDefault: e.target.checked
                                                         })
                                                     }
-                                                    className="form-check-input"
+                                                    className="profile-form-check-input"
                                                     id="defaultAddress"
                                                 />
 
                                                 <label
-                                                    className="form-check-label"
+                                                    className="profile-form-check-label"
                                                     htmlFor="defaultAddress"
                                                 >
                                                     Make this my default address

@@ -229,238 +229,241 @@ const GridTable = ({
       {renderActions()}
 
       {/* ================= Table ================= */}
-      <table className="gridtable shadow-lg my-2">
-        {/* ================= HEADER ================= */}
-        <thead>
-          <tr>
-            {selectable && (
-              <th
-                style={{
-                  width: "50px",
-                  textAlign: "center",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  checked={allRowsSelected}
-                  onChange={handleSelectAll}
-                  disabled={
-                    loading ||
-                    selectableRows.length === 0
-                  }
-                />
-              </th>
-            )}
-            {columns.map((column, index) => (
-              <th
-                key={column.fieldname || index}
-                colSpan={column.colSpan || 1}
-                style={{
-                  width: column.width,
-                  ...column.cellStyle,
-                }}
-                className={column.cellClassName}
-              >
-                {column.text}
-              </th>
-            ))}
-          </tr>
-
-          {/* ================= FILTER ================= */}
-          {columns.some((column) => column.filterable) && (
-            <tr className="grid-filter-row">
-              {/* Selection column */}
+      <div className="gridtable-scroll">
+        <table className="gridtable shadow-lg my-2">
+          {/* ================= HEADER ================= */}
+          <thead>
+            <tr>
               {selectable && (
-                <td
+                <th
                   style={{
-                    width: "50px",
+                    width: "20px",
                     textAlign: "center",
                   }}
                 >
-                  {/* Empty cell intentionally */}
-                </td>
+                  <input
+                    type="checkbox"
+                    className="grid-form-check-input"
+                    checked={allRowsSelected}
+                    onChange={handleSelectAll}
+                    disabled={
+                      loading ||
+                      selectableRows.length === 0
+                    }
+                  />
+                </th>
               )}
               {columns.map((column, index) => (
-                <td key={column.fieldname || index}>
-                  {renderFilter(column)}
-                </td>
+                <th
+                  key={column.fieldname || index}
+                  colSpan={column.colSpan || 1}
+                  style={{
+                    width: column.width,
+                    ...column.cellStyle,
+                  }}
+                  className={column.cellClassName}
+                >
+                  {column.text}
+                </th>
               ))}
             </tr>
-          )}
-        </thead>
 
-        {/* ================= BODY ================= */}
-        <tbody>
+            {/* ================= FILTER ================= */}
+            {columns.some((column) => column.filterable) && (
+              <tr className="grid-filter-row">
+                {/* Selection column */}
+                {selectable && (
+                  <td
+                    style={{
+                      width: "50px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {/* Empty cell intentionally */}
+                  </td>
+                )}
+                {columns.map((column, index) => (
+                  <td key={column.fieldname || index}>
+                    {renderFilter(column)}
+                  </td>
+                ))}
+              </tr>
+            )}
+          </thead>
 
-          {loading && (
-            <tr>
-              <td
-                colSpan={columns.length + (selectable ? 1 : 0)}
-                className="text-center"
-              >
-                <span className="spinner-border spinner-border-sm me-2"></span>
-                Loading...
-              </td>
-            </tr>
-          )}
+          {/* ================= BODY ================= */}
+          <tbody>
 
-          {!loading && data.length === 0 && (
-            <tr>
-              <td
-                colSpan={columns.length + (selectable ? 1 : 0)}
-                className="text-center py-4"
-              >
-                {emptyMessage}
-              </td>
-            </tr>
-          )}
-
-          {!loading &&
-            data.map((row, rowIndex) => {
-
-              const rowSelectable = isRowSelectable(row);
-              const rowSelected = isSelected(row, rowIndex);
-
-              return (
-                <tr
-                  key={getRowKey(row, rowIndex)}
+            {loading && (
+              <tr>
+                <td
+                  colSpan={columns.length + (selectable ? 1 : 0)}
+                  className="text-center"
                 >
+                  <span className="spinner-border spinner-border-sm me-2"></span>
+                  Loading...
+                </td>
+              </tr>
+            )}
 
-                  {selectable && (
-                    <td
-                      style={{
-                        width: "50px",
-                        textAlign: "center",
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        checked={rowSelected}
-                        disabled={!rowSelectable}
-                        onChange={() =>
-                          handleRowSelection(
-                            row,
-                            rowIndex
+            {!loading && data.length === 0 && (
+              <tr>
+                <td
+                  colSpan={columns.length + (selectable ? 1 : 0)}
+                  className="text-center py-4"
+                >
+                  {emptyMessage}
+                </td>
+              </tr>
+            )}
+
+            {!loading &&
+              data.map((row, rowIndex) => {
+
+                const rowSelectable = isRowSelectable(row);
+                const rowSelected = isSelected(row, rowIndex);
+
+                return (
+                  <tr
+                    key={getRowKey(row, rowIndex)}
+                  >
+
+                    {selectable && (
+                      <td
+                        style={{
+                          width: "20px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          className="grid-form-check-input"
+                          checked={rowSelected}
+                          disabled={!rowSelectable}
+                          onChange={() =>
+                            handleRowSelection(
+                              row,
+                              rowIndex
+                            )
+                          }
+                        />
+                      </td>
+                    )}
+
+                    {columns.map((column, columnIndex) => (
+                      <td
+                        key={
+                          column.fieldname ??
+                          columnIndex
+                        }
+                        style={{
+                          width: column.width,
+                          ...column.cellStyle,
+                        }}
+                        className={
+                          column.cellClassName
+                        }
+                      >
+                        {renderCell(
+                          column,
+                          row,
+                          rowIndex
+                        )}
+                      </td>
+                    ))}
+
+                  </tr>
+                );
+              })}
+
+          </tbody>
+
+
+          {/* ================= FOOTER ================= */}
+          {showPagination && (
+            <tfoot>
+              <tr>
+
+                {/* Page information */}
+                <td colSpan={Math.max(columns.length)}>
+                  <div className="d-inline-flex">
+                    <div className="grid-pagination-info">
+
+                      <span>
+                        Page {currentPage} of {totalPages}
+                      </span>
+
+                      {showTotal && (
+                        <span className="mx-1">
+                          Total: {totalCount}
+                        </span>
+                      )}
+
+                    </div>
+                    <div>
+                      <select
+                        className=""
+                        value={pageSize}
+                        onChange={(e) =>
+                          onPageSizeChange(
+                            Number(e.target.value)
                           )
                         }
-                      />
-                    </td>
-                  )}
-
-                  {columns.map((column, columnIndex) => (
-                    <td
-                      key={
-                        column.fieldname ??
-                        columnIndex
-                      }
-                      style={{
-                        width: column.width,
-                        ...column.cellStyle,
-                      }}
-                      className={
-                        column.cellClassName
-                      }
-                    >
-                      {renderCell(
-                        column,
-                        row,
-                        rowIndex
-                      )}
-                    </td>
-                  ))}
-
-                </tr>
-              );
-            })}
-
-        </tbody>
+                      >
+                        {pageSizeOptions.map((size) => (
+                          <option
+                            key={size}
+                            value={size}
+                          >
+                            {size}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
 
-        {/* ================= FOOTER ================= */}
-        {showPagination && (
-          <tfoot>
-            <tr>
+                    {/* Navigation */}
+                    <div className="grid-pagination-buttons">
 
-              {/* Page information */}
-              <td colSpan={Math.max(columns.length, 1)}>
-                <div className="grid-pagination-info">
+                      <button
+                        type="button"
+                        className="pagination-btn"
+                        onClick={() =>
+                          onPageChange(currentPage - 1)
+                        }
+                        disabled={
+                          loading ||
+                          currentPage <= 1
+                        }
+                        title="Previous"
+                      >
+                        <i className="bi bi-chevron-left"></i>
+                      </button>
 
-                  <span>
-                    Page {currentPage} of {totalPages}
-                  </span>
+                      <button
+                        type="button"
+                        className="pagination-btn"
+                        onClick={() =>
+                          onPageChange(currentPage + 1)
+                        }
+                        disabled={
+                          loading ||
+                          currentPage >= totalPages
+                        }
+                        title="Next"
+                      >
+                        <i className="bi bi-chevron-right"></i>
+                      </button>
 
-                  {showTotal && (
-                    <span className="mx-1">
-                      Total: {totalCount}
-                    </span>
-                  )}
+                    </div>
+                  </div>
+                </td>
 
-                </div>
-              </td>
-
-
-
-              <td colSpan="2">
-                {/* Page size */}
-                <select
-                  className=""
-                  value={pageSize}
-                  onChange={(e) =>
-                    onPageSizeChange(
-                      Number(e.target.value)
-                    )
-                  }
-                >
-                  {pageSizeOptions.map((size) => (
-                    <option
-                      key={size}
-                      value={size}
-                    >
-                      {size}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Navigation */}
-                <div className="grid-pagination-buttons">
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onPageChange(currentPage - 1)
-                    }
-                    disabled={
-                      loading ||
-                      currentPage <= 1
-                    }
-                    title="Previous"
-                  >
-                    <i className="bi bi-chevron-left"></i>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onPageChange(currentPage + 1)
-                    }
-                    disabled={
-                      loading ||
-                      currentPage >= totalPages
-                    }
-                    title="Next"
-                  >
-                    <i className="bi bi-chevron-right"></i>
-                  </button>
-
-                </div>
-              </td>
-
-            </tr>
-          </tfoot>
-        )}
-      </table>
+              </tr>
+            </tfoot>
+          )}
+        </table>
+      </div>
     </div>
   );
 };

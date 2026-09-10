@@ -1,5 +1,3 @@
-
-
 .register-page {
     min-height: 100vh;
     width: 100%;
@@ -44,7 +42,7 @@
     margin-bottom: 20px;
 }
 
-.form-group label {
+.form-group .register-label {
     display: block;
     margin-bottom: 8px;
     font-size: 14px;
@@ -52,7 +50,7 @@
     color: #333;
 }
 
-.form-group input {
+.form-group .reg-input {
     width: 100%;
     height: 48px;
     padding: 0 14px;
@@ -64,11 +62,11 @@
     transition: all 0.2s ease;
 }
 
-.form-group input::placeholder {
+.form-group .reg-input::placeholder {
     color: #aaa;
 }
 
-.form-group input:focus {
+.form-group .reg-input:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }

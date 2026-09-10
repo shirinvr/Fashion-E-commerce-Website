@@ -88,7 +88,7 @@
 
 /* Section */
 
-.form-section {
+.profile-form-section {
     padding-bottom: 30px;
     margin-bottom: 30px;
     border-bottom: 1px solid #eeeeee;
@@ -131,7 +131,7 @@
 
 /* Form */
 
-.form-section label {
+.profile-form-section label {
     display: block;
     margin-bottom: 8px;
 
@@ -141,8 +141,8 @@
     color: #333;
 }
 
-.form-control,
-.form-select {
+.profile-form-control,
+.profile-form-select {
     min-height: 48px;
 
     border-radius: 10px;
@@ -156,19 +156,19 @@
     box-shadow: none;
 }
 
-.form-control:focus,
-.form-select:focus {
+.profile-form-control:focus,
+.profile-form-select:focus {
     border-color: #171717;
 
     box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.08);
 }
 
-textarea.form-control {
+textarea.profile-form-control {
     min-height: 100px;
     resize: vertical;
 }
 
-.form-control:disabled {
+.profile-form-control:disabled {
     background: #f5f5f5;
     color: #777;
     cursor: not-allowed;

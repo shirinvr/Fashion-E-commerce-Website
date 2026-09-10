@@ -10,6 +10,7 @@ import loginImg from "../../assets/images/login_img.jpg";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
@@ -52,9 +53,9 @@ const Login = () => {
                 return;
             }
 
-            if(result.success && result.message !== ""){
+            if (result.success && result.message !== "") {
                 navigate('/landingpage/dashboard');
-                localStorage.setItem("User",JSON.stringify(result));
+                localStorage.setItem("User", JSON.stringify(result));
             }
 
             setEmail("");
@@ -126,33 +127,59 @@ const Login = () => {
 
                                             <div className="mb-3">
 
-                                                <label>Email</label>
+                                                <label htmlFor="email">Email</label>
+                                                <div className="form-wrapper">
+                                                    <input
+                                                        type="email"
+                                                        className="form-control"
+                                                        name="email"
+                                                        placeholder="Enter email"
+                                                        value={email}
+                                                        onChange={(e) => setEmail(e.target.value)}
+                                                        autoComplete="current-email"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="password-toggle"
+                                                    >
+                                                        <i className="bi bi-person"></i>
+                                                    </button>
+                                                </div>
 
-                                                <input
-                                                    type="email"
-                                                    className="form-control"
-                                                    placeholder="Enter email"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    autoComplete="true"
-                                                />
-
-                                            </div>
-
-                                            <div className="mb-3">
-
-                                                <label>Password</label>
-
-                                                <input
-                                                    type="password"
-                                                    className="form-control"
-                                                    placeholder="Enter password"
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
-                                                    autoComplete="true"
-                                                />
 
                                             </div>
+
+                                            <div className="form-group">
+                                                <label htmlFor="password">Password</label>
+
+                                                <div className="form-wrapper">
+                                                    <input
+                                                        id="password"
+                                                        type={showPassword ? "text" : "password"}
+                                                        className="form-control"
+                                                        name="password"
+                                                        placeholder="Enter password"
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
+                                                        autoComplete="current-password"
+                                                    />
+
+                                                    <button
+                                                        type="button"
+                                                        className="password-toggle"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                    >
+                                                        <i
+                                                            className={
+                                                                showPassword
+                                                                    ? "bi bi-eye-fill"
+                                                                    : "bi bi-eye-slash-fill"
+                                                            }
+                                                        ></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
 
                                             <div className="d-flex justify-content-between mb-4">
 
@@ -161,13 +188,14 @@ const Login = () => {
                                                     <input
                                                         type="checkbox"
                                                         className="form-check-input me-2 rememberme-checkbox"
+                                                        name="checkbox"
                                                     />
 
                                                     Remember Me
 
                                                 </div>
 
-                                                <a href="/forgotpassword">
+                                                <a href="/forgotpassword" className="text-decoration-none">
                                                     Forgot Password?
                                                 </a>
 
@@ -206,7 +234,7 @@ const Login = () => {
 
                                             Don't have an account?
 
-                                            <a href="/register" className="ms-2">
+                                            <a href="/register" className="ms-2 text-decoration-none">
                                                 Register
                                             </a>
 

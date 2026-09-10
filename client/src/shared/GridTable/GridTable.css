@@ -1,185 +1,437 @@
-/* ===============================
-   GRID TABLE BASE
-================================= */
-.gridtable {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background-color: #ffffff;
-  font-size: 14px;
-  overflow: hidden;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  table-layout: fixed;
+/* ============================================================
+   GRID TABLE WRAPPER
+============================================================ */
 
+.gridtable-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-/* ===============================
+
+/* ============================================================
+   GRID TABLE SCROLL CONTAINER
+============================================================ */
+
+.gridtable-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-height: 565px;
+  max-height: 587px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+
+/* ============================================================
+   GRID TABLE
+============================================================ */
+
+.gridtable {
+  /*
+   * Table grows according to the defined column widths.
+   */
+  width: max-content;
+
+  /*
+   * If table is smaller than the container,
+   * it will still occupy the full available width.
+   */
+  min-width: 100%;
+
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  background-color: #ffffff;
+
+  font-size: 14px;
+
+  font-family:
+    Verdana,
+    Geneva,
+    Tahoma,
+    sans-serif;
+
+  table-layout: fixed;
+
+  border-radius: 10px;
+}
+
+
+/* ============================================================
    TABLE HEADER
-================================= */
+============================================================ */
+
+.gridtable thead {
+  width: 100%;
+}
+
+
 .gridtable thead th {
   position: sticky;
   top: 0;
-  background: linear-gradient(135deg, #7cc9ff, #4fa3e3);
+
+  z-index: 2;
+
+  background: linear-gradient(135deg,
+      #7cc9ff,
+      #4fa3e3);
+
   color: #ffffff;
+
   font-weight: 600;
+
   text-align: left;
+
   padding: 10px;
+
   border-bottom: 1px solid #dcdcdc;
+
   white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 
-/* ===============================
+
+/* ============================================================
    FILTER ROW
-================================= */
+============================================================ */
+
 .gridtable thead td {
   background-color: #f8fbff;
+
   padding: 6px 8px;
+
   border-bottom: 1px solid #e0e0e0;
+
+  vertical-align: middle;
 }
 
+
 .gridtable thead input {
+  height: 30px;
+
+  box-sizing: border-box;
+
   font-size: 13px;
 }
+
+
+.gridtable thead select {
+  width: 100%;
+
+  height: 30px;
+
+  box-sizing: border-box;
+
+  font-size: 13px;
+}
+
 
 .gridtable thead i {
   color: #6c757d;
 }
 
-/* ===============================
+
+/* ============================================================
+   SEARCH FILTER
+============================================================ */
+
+.grid-filter {
+  display: flex;
+
+  align-items: center;
+
+  width: 100%;
+}
+
+
+.grid-filter input {
+  width: 100%;
+
+  min-width: 0;
+}
+
+
+.grid-filter button {
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
    TABLE BODY
-================================= */
+============================================================ */
+
+.gridtable tbody {
+  width: 100%;
+  height: 410px;
+  min-height: 410px;
+}
+
+
+/* ============================================================
+   BODY ROWS
+============================================================ */
+
 .gridtable tbody tr {
   transition: background-color 0.2s ease-in-out;
 }
+
 
 .gridtable tbody tr:nth-child(even) {
   background-color: #fafafa;
 }
 
+
 .gridtable tbody tr:hover {
   background-color: #eef6ff;
 }
 
+
+/* ============================================================
+   BODY CELLS
+============================================================ */
+
 .gridtable tbody td {
   padding: 10px;
+
   border-bottom: 1px solid #eeeeee;
+
   vertical-align: middle;
+
   color: #333333;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
 }
 
-/* ===============================
-   FOOTER / PAGINATION
-================================= */
+
+/* ============================================================
+   CHECKBOX / SELECTION COLUMN
+============================================================ */
+
+.gridtable th:first-child,
+.gridtable td:first-child {
+  vertical-align: middle;
+}
+
+
+/* ============================================================
+   TABLE FOOTER
+============================================================ */
+
+.gridtable tfoot {
+  width: 100%;
+}
+
+
 .gridtable tfoot td {
   background-color: #f4f8fc;
+
   padding: 8px;
+
   border-top: 1px solid #dcdcdc;
+
   vertical-align: middle;
+
   font-size: 13px;
 }
 
-/* Page text */
+
+/* ============================================================
+   PAGE INFORMATION
+============================================================ */
+
+.grid-pagination-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+
 .gridtable tfoot span {
   font-weight: 500;
+
   color: #555;
 }
 
-/* ===============================
+
+/* ============================================================
    PAGINATION BUTTONS
-================================= */
-.gridtable tfoot button {
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-  margin: 0px 2px;
-  height: 30px;
+============================================================ */
+
+.grid-pagination-buttons {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
 }
 
-.gridtable tfoot button:hover:not(:disabled) {
+
+.gridtable tfoot .pagination-btn {
+  cursor: pointer;
+
+  padding: 4px 8px;
+
+  border-radius: 4px;
+
+  transition: background-color 0.2s ease;
+
+  margin: 0 2px;
+
+  height: 30px;
+
+  min-width: 32px;
+}
+
+
+.gridtable tfoot .pagination-btn:hover:not(:disabled) {
   background-color: #dbeeff;
 }
 
-.gridtable tfoot button:disabled {
+
+.gridtable tfoot .pagination-btn:disabled {
   opacity: 0.4;
+
   cursor: not-allowed;
 }
 
-/* ===============================
+
+/* ============================================================
    PAGE SIZE DROPDOWN
-================================= */
+============================================================ */
+
 .gridtable tfoot select {
   font-size: 13px;
+
   border-radius: 4px;
+
   border: 1px solid #ced4da;
+
   height: 30px;
+
   width: 70px;
-}
 
-/* ===============================
-   SEARCH INPUT GROUP
-================================= */
-.d-inline-flex input.form-control {
-  height: 30px;
-  font-size: 13px;
-}
-
-.d-inline-flex div {
-  display: flex;
-  align-items: center;
   background-color: #ffffff;
 }
 
-/* ===============================
-   SHADOW & RADIUS
-================================= */
+
+/* ============================================================
+   SEARCH INPUT GROUP
+============================================================ */
+
+.d-inline-flex input.form-control {
+  height: 30px;
+
+  font-size: 13px;
+}
+
+
+.d-inline-flex div {
+  display: flex;
+
+  align-items: center;
+
+  background-color: #ffffff;
+}
+
+
+/* ============================================================
+   GRID ACTION BUTTONS
+============================================================ */
+
+.grid-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  white-space: nowrap;
+}
+
+
+.grid-action-btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 0;
+
+  border-radius: 4px;
+
+  padding: 5px 8px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+}
+
+
+.grid-action-btn:hover {
+  opacity: 0.85;
+}
+
+
+/* ============================================================
+   SHADOW
+============================================================ */
+
 .shadow-lg {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.08) !important;
 }
 
-.gridtable {
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+
+.gridtable-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+
+.gridtable-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+
+.gridtable-scroll::-webkit-scrollbar-thumb {
+  background: #b8b8b8;
+
   border-radius: 10px;
-  width: 100%;
-  border-collapse: collapse;
 }
 
 
-.gridtable thead {
-  overflow-x: scroll;
-  display: table;
-  width: 70%;
-  table-layout: fixed;
-}
-
-.gridtable tbody {
-  display: block;
-  min-height: 400px;
-  max-height: 430px;
-  overflow-y: auto;
-  width: 100%;
-  overflow-x: scroll;
-}
-
-.gridtable tfoot {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-.gridtable tbody tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
+.gridtable-scroll::-webkit-scrollbar-thumb:hover {
+  background: #999999;
 }
 
 
-/* ===============================
+/* ============================================================
    RESPONSIVE
-================================= */
+============================================================ */
+
 @media (max-width: 768px) {
+
   .gridtable {
     font-size: 12px;
   }
+
 
   .gridtable thead th,
   .gridtable tbody td,
@@ -187,9 +439,15 @@
     padding: 6px;
   }
 
+
   .gridtable tfoot span {
     font-size: 12px;
   }
 
 
+  .gridtable-scroll {
+    min-height: 350px;
+
+    max-height: 450px;
+  }
 }

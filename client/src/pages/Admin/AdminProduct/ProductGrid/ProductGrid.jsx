@@ -73,7 +73,7 @@ const ProductGrid = ({
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search product...",
-      width: "200px"
+      width: "150px"
     },
 
     {
@@ -82,7 +82,7 @@ const ProductGrid = ({
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search description...",
-      width: "200px"
+      width: "150px"
     },
 
     {
@@ -91,7 +91,7 @@ const ProductGrid = ({
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search category...",
-      width: "200px"
+      width: "150px"
     },
     {
       fieldname: "category_name",
@@ -99,7 +99,7 @@ const ProductGrid = ({
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search category...",
-      width: "200px"
+      width: "150px"
     },
     {
       fieldname: "category_name",
@@ -107,7 +107,7 @@ const ProductGrid = ({
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search category...",
-      width: "200px"
+      width: "150px"
     },
     {
       fieldname: "category_name",
@@ -249,7 +249,7 @@ const ProductGrid = ({
   return (
     <div className="row">
 
-      <div className="col-md-12">
+      <div className="col-md-12 prod-grid">
         <GridTable
           columns={columns}
           data={products}

@@ -227,7 +227,7 @@ const AddEditViewProduct = ({
 
                   <i className="bi bi-chevron-right small"></i>
 
-                  <span className="text-teal fw-medium">
+                  <span className="text-rose fw-medium">
                       Add New Product
                   </span>
               </div>
@@ -674,7 +674,7 @@ const AddEditViewProduct = ({
                   <div className="d-flex align-items-center gap-2">
                       <button
                           type="button"
-                          className="btn btn-schedule d-flex align-items-center gap-2"
+                          className="btn-schedule d-flex align-items-center gap-2"
                       >
                           <i className="bi bi-calendar-event"></i>
                           Schedule
@@ -683,7 +683,7 @@ const AddEditViewProduct = ({
                       <button
                           type="button"
                           onClick={saveProduct}
-                          className="btn btn-teal d-flex align-items-center gap-2"
+                          className="btn-rose d-flex align-items-center gap-2"
                       >
                           <i
                               className={`bi ${saved

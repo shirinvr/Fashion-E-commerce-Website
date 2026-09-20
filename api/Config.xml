@@ -16,5 +16,8 @@
   <ApiMethod name="GetAllProductsForAdmin"><StoredProcedure>dbo.usp_getAllProductsForAdmin</StoredProcedure></ApiMethod>
   <ApiMethod name="SaveUpdateDeleteProduct"><StoredProcedure>dbo.usp_SaveUpdateDeleteProduct</StoredProcedure></ApiMethod>
   <ApiMethod name="GetProductByIdAdmin"><StoredProcedure>dbo.usp_getUserProfileByIdAdmin</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetAllProductdetails"><StoredProcedure>dbo.usp_getAllProductdetails</StoredProcedure></ApiMethod>
+  <ApiMethod name="SaveProductImage"><StoredProcedure>dbo.usp_saveProductImage</StoredProcedure></ApiMethod>
+  <ApiMethod name="GetAllMasterForProduct"><StoredProcedure>dbo.usp_getAllMasterForProduct</StoredProcedure></ApiMethod>
 
 </ApiProcedureMappings>

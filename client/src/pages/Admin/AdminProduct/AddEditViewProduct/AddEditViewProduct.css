@@ -1,6 +1,7 @@
 .prod-details {
     background-color: #f8fafc;
     height: 600px;
+    padding: 20px 0px;
     max-height: 600px;
     overflow-y: scroll;
 }
@@ -13,7 +14,7 @@
     background-color: #cf8faa;
     border-color: #cf8faa;
     color: #fff;
-    width: 240px;
+    width: 360px;
     border-radius: 8px;
 }
 

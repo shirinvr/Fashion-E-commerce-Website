@@ -14,4 +14,7 @@ export const ApiMethodNames = {
   GetAllProductsForAdmin: "GetAllProductsForAdmin",
   SaveUpdateDeleteProduct: "SaveUpdateDeleteProduct",
   GetProductByIdAdmin: "GetProductByIdAdmin",
+  GetAllProductdetails: "GetAllProductdetails",
+  SaveProductImage: "SaveProductImage",
+  GetAllMasterForProduct: "GetAllMasterForProduct",
 } as const;

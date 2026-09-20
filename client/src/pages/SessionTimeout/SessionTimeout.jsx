@@ -1,11 +1,11 @@
-import { useEffect, useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const SessionTimeout = ({
-  timeout = 15 * 60 * 1000, // 15 minutes
+  timeout = 30 * 60 * 1000, // 15 minutes
   onTimeout,
 }) => {
   const [showPopup, setShowPopup] = useState(false);
-const timerRef = useRef(null);
+  const timerRef = useRef(null);
   useEffect(() => {
     let timer;
 
@@ -49,7 +49,7 @@ const timerRef = useRef(null);
   }, [timeout, showPopup]);
 
   const handleOk = () => {
-      onTimeout?.();
+    onTimeout?.();
   };
 
   if (!showPopup) {

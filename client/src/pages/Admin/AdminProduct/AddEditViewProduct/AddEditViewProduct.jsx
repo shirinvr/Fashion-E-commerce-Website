@@ -1,37 +1,95 @@
-import React, { useState, useEffect, useCallback,useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { callDynamicApi } from "../../../../shared/apiService.jsx";
 import { ApiMethodNames } from "../../../../config/ServiceMapping.ts";
 import "./AddEditViewProduct.css";
 
 const AddEditViewProduct = ({
-  searchValues = {},
-  onAdd,
-  onEdit,
-  onView,
-  onDelete,
-  onDownload,
+    searchValues = {},
+    onAdd,
+    onEdit,
+    onView,
+    onDelete,
+    onDownload,
 }) => {
-  const [products, setProducts] = useState([]);
+    const [productCategory, setProductCategory] = useState([]);
+    const [productSubCategory, setProductSubCategory] = useState([]);
+    const [productBrand, setProductBrand] = useState([]);
+    const [productSize, setProductSize] = useState([]);
+    const [productColors, setProductColors] = useState([]);
 
-  const getAllProducts = useCallback(async () => {
-    try {
-      const res = await callDynamicApi(ApiMethodNames.GetCity, {});
+    const getAllProductCategory = useCallback(async () => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetAllMasterForProduct, { Mode: 1, filter: '' });
 
-      if (res.success === true) {
-        setProducts(res.data.result1);
-      }
-    } catch (err) {
-      console.error(err);
+            if (res.success === true) {
+                setProductCategory(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+    const getAllProductSubCategory = useCallback(async () => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetAllMasterForProduct, { Mode: 2, filter: '' });
+
+            if (res.success === true) {
+                setProductSubCategory(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+    const getAllProductBrand = useCallback(async () => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetAllMasterForProduct, { Mode: 3, filter: '' });
+
+            if (res.success === true) {
+                setProductBrand(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+    const getAllProductSize = useCallback(async () => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetAllMasterForProduct, { Mode: 4, filter: '' });
+
+            if (res.success === true) {
+                setProductSize(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+    const getAllProductColors = useCallback(async () => {
+        try {
+            const res = await callDynamicApi(ApiMethodNames.GetAllMasterForProduct, { Mode: 5, filter: '' });
+
+            if (res.success === true) {
+                setProductColors(res.data.result1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
+    useEffect(() => {
+        getAllProductCategory();
+        getAllProductSubCategory();
+        getAllProductBrand();
+        getAllProductSize();
+        getAllProductColors();
+    }, [
+        getAllProductCategory,
+        getAllProductSubCategory,
+        getAllProductBrand,
+        getAllProductSize,
+        getAllProductColors
+    ]);
+
+    const handleAdd = () => {
+
     }
-  }, []);
-
-  useEffect(() => {
-    getAllProducts();
-  }, [getAllProducts]);
-
-  const handleAdd = () => {
-    
-  }
 
 
     function Card({ title, right, children }) {
@@ -60,7 +118,7 @@ const AddEditViewProduct = ({
         );
     }
 
-    function Select({ value, onChange, options, placeholder }) {
+    function Select({ value, onChange, options, placeholder, valueKey, labelKey }) {
         return (
             <div className="position-relative">
                 <select
@@ -74,9 +132,17 @@ const AddEditViewProduct = ({
                         </option>
                     )}
 
-                    {options.map((option) => (
+                    {/* {options.map((option) => (
                         <option key={option} value={option}>
                             {option}
+                        </option>
+                    ))} */}
+                    {options.map((option) => (
+                        <option
+                            key={valueKey ? option[valueKey] : option}
+                            value={valueKey ? option[valueKey] : option}
+                        >
+                            {labelKey ? option[labelKey] : option}
                         </option>
                     ))}
                 </select>
@@ -88,620 +154,653 @@ const AddEditViewProduct = ({
     // Main Component
     // ---------------------------------------------------------------------------
 
-        const fileInputRef = useRef(null);
+    const fileInputRef = useRef(null);
 
-        const [form, setForm] = useState({
-            name: "Premium Half Sleeve T-Shirt - Brooklyn Fleece",
+    const [form, setForm] = useState({
+        name: "Premium Half Sleeve T-Shirt - Brooklyn Fleece",
 
-            description:
-                "Looking for a little extra warmth? Grab this classic hoodie. Smooth on the outside with unbrushed loops on the inside, our mid weight French terry is comfortable enough to wear year long.\n\nProduct Details\n- Body: 80% cotton/20% polyester. Hood lining: 100% cotton.\n- Colour Shown: Black/White\n- Style: FV7283-010",
+        description:
+            "Looking for a little extra warmth? Grab this classic hoodie. Smooth on the outside with unbrushed loops on the inside, our mid weight French terry is comfortable enough to wear year long.\n\nProduct Details\n- Body: 80% cotton/20% polyester. Hood lining: 100% cotton.\n- Colour Shown: Black/White\n- Style: FV7283-010",
 
-            category: "Men's Clothes",
-            subCategory: "Men's Tops & T-Shirts",
+        category: "Men's Clothes",
+        subCategory: "Men's Tops & T-Shirts",
 
-            sku: "SKU-BB-66-A6",
-            stock: "10120",
-            minStock: "100",
+        sku: "SKU-BB-66-A6",
+        stock: "10120",
+        minStock: "100",
 
-            brand: "Adidas",
-            size: "Medium",
-            color: "Black and White",
+        brand: "Adidas",
+        size: "Medium",
+        color: "Black and White",
 
-            price: "12120.00",
-            comparePrice: "10120.00",
-            discount: "15",
-            minOrder: "100",
+        price: "12120.00",
+        comparePrice: "10120.00",
+        discount: "15",
+        minOrder: "100",
+    });
+
+    const [images, setImages] = useState([
+        {
+            id: 1,
+            url: null,
+            label: "front",
+        },
+        {
+            id: 2,
+            url: null,
+            label: "back",
+        },
+    ]);
+
+    const [saved, setSaved] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    // -----------------------------------------------------------------------
+    // Form Helpers
+    // -----------------------------------------------------------------------
+
+    const update = (key) => (value) => {
+        setForm((previous) => ({
+            ...previous,
+            [key]: value,
+        }));
+    };
+
+    // -----------------------------------------------------------------------
+    // Image Upload
+    // -----------------------------------------------------------------------
+
+    const handleFiles = (fileList) => {
+        if (!fileList) return;
+
+        const availableSlots = 4 - images.length;
+
+        const files = Array.from(fileList).slice(0, availableSlots);
+
+        files.forEach((file) => {
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`${file.name} is larger than 5MB.`);
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+                alert(`${file.name} is not an image.`);
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                setImages((previous) => [
+                    ...previous,
+                    {
+                        id: Date.now() + Math.random(),
+                        url: reader.result,
+                    },
+                ]);
+            };
+
+            reader.readAsDataURL(file);
         });
+    };
 
-        const [images, setImages] = useState([
-            {
-                id: 1,
-                url: null,
-                label: "front",
-            },
-            {
-                id: 2,
-                url: null,
-                label: "back",
-            },
-        ]);
+    const removeImage = (id) => {
+        setImages((previous) =>
+            previous.filter((image) => image.id !== id)
+        );
+    };
 
-        const [saved, setSaved] = useState(false);
-        const [errors, setErrors] = useState({});
+    // -----------------------------------------------------------------------
+    // Validation
+    // -----------------------------------------------------------------------
 
-        // -----------------------------------------------------------------------
-        // Form Helpers
-        // -----------------------------------------------------------------------
+    const validate = () => {
+        const nextErrors = {};
 
-        const update = (key) => (value) => {
-            setForm((previous) => ({
-                ...previous,
-                [key]: value,
-            }));
-        };
+        if (!form.name.trim()) {
+            nextErrors.name = "Product name is required";
+        }
 
-        // -----------------------------------------------------------------------
-        // Image Upload
-        // -----------------------------------------------------------------------
+        if (!form.price.trim()) {
+            nextErrors.price = "Price is required";
+        }
 
-        const handleFiles = (fileList) => {
-            if (!fileList) return;
+        if (!form.sku.trim()) {
+            nextErrors.sku = "SKU is required";
+        }
 
-            const availableSlots = 4 - images.length;
+        setErrors(nextErrors);
 
-            const files = Array.from(fileList).slice(0, availableSlots);
+        return Object.keys(nextErrors).length === 0;
+    };
 
-            files.forEach((file) => {
-                if (file.size > 5 * 1024 * 1024) {
-                    alert(`${file.name} is larger than 5MB.`);
-                    return;
+    const saveProduct = async (e) => {
+        e.preventDefault();
+
+        if (!validate()) {
+            return;
+        }
+
+        try {
+            const res = await callDynamicApi(
+                ApiMethodNames.SaveUpdateDeleteProduct,
+                {
+                    Mode: 1,
+
+                    ProductId: 0,
+
+                    ProductName: form.name,
+                    ProductDescription: form.description,
+
+                    CategoryId: form.category,
+                    SubCategoryId: form.subCategory,
+
+                    BrandId: form.brand,
+                    SizeId: form.size,
+                    ColorId: form.color,
+
+                    SKU: form.sku,
+
+                    StockQuantity: form.stock,
+                    MinimumStockQuantity: form.minStock,
+
+                    Price: form.price,
+                    CompareAtPrice: form.comparePrice,
+                    DiscountPercent: form.discount,
+                    MinimumOrderQuantity: form.minOrder,
                 }
-
-                if (!file.type.startsWith("image/")) {
-                    alert(`${file.name} is not an image.`);
-                    return;
-                }
-
-                const reader = new FileReader();
-
-                reader.onload = () => {
-                    setImages((previous) => [
-                        ...previous,
-                        {
-                            id: Date.now() + Math.random(),
-                            url: reader.result,
-                        },
-                    ]);
-                };
-
-                reader.readAsDataURL(file);
-            });
-        };
-
-        const removeImage = (id) => {
-            setImages((previous) =>
-                previous.filter((image) => image.id !== id)
             );
-        };
 
-        // -----------------------------------------------------------------------
-        // Validation
-        // -----------------------------------------------------------------------
+            console.log(res);
 
-        const validate = () => {
-            const nextErrors = {};
-
-            if (!form.name.trim()) {
-                nextErrors.name = "Product name is required";
+            if (res.success === true) {
+                setSaved(true);
+            } else {
+                alert(res.message || "Unable to save product.");
             }
 
-            if (!form.price.trim()) {
-                nextErrors.price = "Price is required";
-            }
+        } catch (error) {
+            console.error("Save product error:", error);
+            alert("Something went wrong while saving the product.");
+        }
+    };
 
-            if (!form.sku.trim()) {
-                nextErrors.sku = "SKU is required";
-            }
 
-            setErrors(nextErrors);
+    /*
+     * ============================================================
+     * Render
+     * ============================================================
+     */
 
-            return Object.keys(nextErrors).length === 0;
-        };
+    return (
+        <div className="row">
+            <div className="col-md-12 prod-details">
+                {/* Breadcrumb */}
+                <div className="breadcrumb-area d-flex py-2 align-items-center gap-2 small text-secondary mb-1">
+                    <i className="bi bi-house"></i>
 
-        const saveProduct = (e) =>{}
+                    <span>Products</span>
 
-  /*
-   * ============================================================
-   * Render
-   * ============================================================
-   */
+                    <i className="bi bi-chevron-right small"></i>
 
-  return (
-    <div className="row">
-      <div className="col-md-12 prod-details">
-              {/* Breadcrumb */}
-              <div className="breadcrumb-area d-flex py-2 align-items-center gap-2 small text-secondary mb-1">
-                  <i className="bi bi-house"></i>
+                    <span className="text-rose fw-medium">
+                        Add New Product
+                    </span>
+                </div>
 
-                  <span>Products</span>
+                {/* Page Header */}
+                <div className="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+                    <div>
+                        <h1 className="page-title mb-1">
+                            Add New Product
+                        </h1>
 
-                  <i className="bi bi-chevron-right small"></i>
+                        <p className="text-secondary small mb-0">
+                            Add a new product to your store
+                        </p>
+                    </div>
+                </div>
 
-                  <span className="text-rose fw-medium">
-                      Add New Product
-                  </span>
-              </div>
+                {/* ========================================================= */}
+                {/* Main Grid                                                  */}
+                {/* ========================================================= */}
 
-              {/* Page Header */}
-              <div className="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
-                  <div>
-                      <h1 className="page-title mb-1">
-                          Add New Product
-                      </h1>
+                <div className="row g-4">
+                    {/* ===================================================== */}
+                    {/* Left Column                                            */}
+                    {/* ===================================================== */}
 
-                      <p className="text-secondary small mb-0">
-                          Add a new product to your store
-                      </p>
-                  </div>
-              </div>
+                    <div className="col-12 col-xl-8">
+                        <div className="d-flex flex-column gap-4">
 
-              {/* ========================================================= */}
-              {/* Main Grid                                                  */}
-              {/* ========================================================= */}
+                            {/* Name & Description */}
+                            <Card title="Name and Description">
+                                <div className="d-flex flex-column gap-4">
+                                    <Field label="Product Name">
+                                        <input
+                                            type="text"
+                                            className="form-control product-input"
+                                            value={form.name}
+                                            onChange={(e) =>
+                                                update("name")(
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder="e.g. Premium Half Sleeve T-Shirt"
+                                        />
 
-              <div className="row g-4">
-                  {/* ===================================================== */}
-                  {/* Left Column                                            */}
-                  {/* ===================================================== */}
+                                        {errors.name && (
+                                            <div className="text-danger small mt-1">
+                                                {errors.name}
+                                            </div>
+                                        )}
+                                    </Field>
 
-                  <div className="col-12 col-xl-8">
-                      <div className="d-flex flex-column gap-4">
+                                    <Field label="Product Description">
+                                        <div className="description-editor">
+                                            <div className="editor-toolbar d-flex align-items-center gap-1">
+                                                <button
+                                                    type="button"
+                                                    className="editor-btn"
+                                                >
+                                                    <i className="bi bi-type-bold"></i>
+                                                </button>
 
-                          {/* Name & Description */}
-                          <Card title="Name and Description">
-                              <div className="d-flex flex-column gap-4">
-                                  <Field label="Product Name">
-                                      <input
-                                          type="text"
-                                          className="form-control product-input"
-                                          value={form.name}
-                                          onChange={(e) =>
-                                              update("name")(
-                                                  e.target.value
-                                              )
-                                          }
-                                          placeholder="e.g. Premium Half Sleeve T-Shirt"
-                                      />
+                                                <button
+                                                    type="button"
+                                                    className="editor-btn"
+                                                >
+                                                    <i className="bi bi-type-italic"></i>
+                                                </button>
 
-                                      {errors.name && (
-                                          <div className="text-danger small mt-1">
-                                              {errors.name}
-                                          </div>
-                                      )}
-                                  </Field>
+                                                <button
+                                                    type="button"
+                                                    className="editor-btn"
+                                                >
+                                                    <i className="bi bi-type-underline"></i>
+                                                </button>
 
-                                  <Field label="Product Description">
-                                      <div className="description-editor">
-                                          <div className="editor-toolbar d-flex align-items-center gap-1">
-                                              <button
-                                                  type="button"
-                                                  className="editor-btn"
-                                              >
-                                                  <i className="bi bi-type-bold"></i>
-                                              </button>
+                                                <button
+                                                    type="button"
+                                                    className="editor-btn"
+                                                >
+                                                    <i className="bi bi-link-45deg"></i>
+                                                </button>
 
-                                              <button
-                                                  type="button"
-                                                  className="editor-btn"
-                                              >
-                                                  <i className="bi bi-type-italic"></i>
-                                              </button>
+                                                <button
+                                                    type="button"
+                                                    className="editor-btn"
+                                                >
+                                                    <i className="bi bi-text-left"></i>
+                                                </button>
+                                            </div>
 
-                                              <button
-                                                  type="button"
-                                                  className="editor-btn"
-                                              >
-                                                  <i className="bi bi-type-underline"></i>
-                                              </button>
+                                            <textarea
+                                                rows="10"
+                                                value={form.description}
+                                                onChange={(e) =>
+                                                    update("description")(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="form-control border-0 description-textarea"
+                                                placeholder="Describe the product..."
+                                            />
+                                        </div>
+                                    </Field>
+                                </div>
+                            </Card>
 
-                                              <button
-                                                  type="button"
-                                                  className="editor-btn"
-                                              >
-                                                  <i className="bi bi-link-45deg"></i>
-                                              </button>
+                            {/* Category */}
+                            <Card title="Category">
+                                <div className="d-flex flex-column gap-4">
+                                    <Field label="Product Category">
+                                        <Select
+                                            value={form.category}
+                                            onChange={update("category")}
+                                            options={productCategory}
+                                            valueKey="CategoryId"
+                                            labelKey="CategoryName"
+                                        />
+                                    </Field>
 
-                                              <button
-                                                  type="button"
-                                                  className="editor-btn"
-                                              >
-                                                  <i className="bi bi-text-left"></i>
-                                              </button>
-                                          </div>
+                                    <Field label="Product Sub-Category">
+                                        <Select
+                                            value={form.subCategory}
+                                            onChange={update("subCategory")}
+                                            options={productSubCategory}
+                                            valueKey="SubCategoryId"
+                                            labelKey="SubCategoryName"
+                                        />
+                                    </Field>
+                                </div>
+                            </Card>
 
-                                          <textarea
-                                              rows="7"
-                                              value={form.description}
-                                              onChange={(e) =>
-                                                  update("description")(
-                                                      e.target.value
-                                                  )
-                                              }
-                                              className="form-control border-0 description-textarea"
-                                              placeholder="Describe the product..."
-                                          />
-                                      </div>
-                                  </Field>
-                              </div>
-                          </Card>
+                            {/* Manage Stock */}
+                            <Card title="Manage Stock">
+                                <div className="d-flex flex-column gap-4">
+                                    <Field label="Stock Keeping Unit">
+                                        <input
+                                            type="text"
+                                            className="form-control product-input"
+                                            value={form.sku}
+                                            onChange={(e) =>
+                                                update("sku")(
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder="SKU-000-00"
+                                        />
 
-                          {/* Category */}
-                          <Card title="Category">
-                              <div className="d-flex flex-column gap-4">
-                                  <Field label="Product Category">
-                                      <Select
-                                          value={form.category}
-                                          onChange={update("category")}
-                                          options={[
-                                              "Men's Clothes",
-                                              "Women's Clothes",
-                                              "Kids' Clothes",
-                                              "Accessories",
-                                              "Footwear",
-                                          ]}
-                                      />
-                                  </Field>
+                                        {errors.sku && (
+                                            <div className="text-danger small mt-1">
+                                                {errors.sku}
+                                            </div>
+                                        )}
+                                    </Field>
 
-                                  <Field label="Product Sub-Category">
-                                      <Select
-                                          value={form.subCategory}
-                                          onChange={update("subCategory")}
-                                          options={[
-                                              "Men's Tops & T-Shirts",
-                                              "Men's Hoodies",
-                                              "Men's Jackets",
-                                              "Men's Bottoms",
-                                          ]}
-                                      />
-                                  </Field>
-                              </div>
-                          </Card>
+                                    <div className="row g-3">
+                                        <div className="col-6">
+                                            <Field label="Product Stock">
+                                                <input
+                                                    type="number"
+                                                    className="form-control product-input"
+                                                    value={form.stock}
+                                                    onChange={(e) =>
+                                                        update("stock")(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </Field>
+                                        </div>
 
-                          {/* Manage Stock */}
-                          <Card title="Manage Stock">
-                              <div className="d-flex flex-column gap-4">
-                                  <Field label="Stock Keeping Unit">
-                                      <input
-                                          type="text"
-                                          className="form-control product-input"
-                                          value={form.sku}
-                                          onChange={(e) =>
-                                              update("sku")(
-                                                  e.target.value
-                                              )
-                                          }
-                                          placeholder="SKU-000-00"
-                                      />
+                                        <div className="col-6">
+                                            <Field label="Minimum Stock">
+                                                <input
+                                                    type="number"
+                                                    className="form-control product-input"
+                                                    value={form.minStock}
+                                                    onChange={(e) =>
+                                                        update("minStock")(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </Field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Card>
+                        </div>
+                    </div>
 
-                                      {errors.sku && (
-                                          <div className="text-danger small mt-1">
-                                              {errors.sku}
-                                          </div>
-                                      )}
-                                  </Field>
+                    {/* ===================================================== */}
+                    {/* Right Column                                           */}
+                    {/* ===================================================== */}
 
-                                  <div className="row g-3">
-                                      <div className="col-6">
-                                          <Field label="Product Stock">
-                                              <input
-                                                  type="number"
-                                                  className="form-control product-input"
-                                                  value={form.stock}
-                                                  onChange={(e) =>
-                                                      update("stock")(
-                                                          e.target.value
-                                                      )
-                                                  }
-                                              />
-                                          </Field>
-                                      </div>
+                    <div className="col-12 col-xl-4">
+                        <div className="d-flex flex-column gap-4">
 
-                                      <div className="col-6">
-                                          <Field label="Minimum Stock">
-                                              <input
-                                                  type="number"
-                                                  className="form-control product-input"
-                                                  value={form.minStock}
-                                                  onChange={(e) =>
-                                                      update("minStock")(
-                                                          e.target.value
-                                                      )
-                                                  }
-                                              />
-                                          </Field>
-                                      </div>
-                                  </div>
-                              </div>
-                          </Card>
-                      </div>
-                  </div>
+                            {/* Product Details */}
+                            <Card title="Product Details">
+                                <div className="row g-3">
+                                    <div className="col-6">
+                                        <Field label="Brand Name">
+                                            <Select
+                                                value={form.brand}
+                                                onChange={update("brand")}
+                                                options={productBrand}
+                                                valueKey="BrandId"
+                                                labelKey="BrandName"
+                                            />
+                                        </Field>
+                                    </div>
 
-                  {/* ===================================================== */}
-                  {/* Right Column                                           */}
-                  {/* ===================================================== */}
+                                    <div className="col-6">
+                                        <Field label="Product Size">
+                                            <Select
+                                                value={form.size}
+                                                onChange={update("size")}
+                                                options={productSize}
+                                                valueKey="SizeId"
+                                                labelKey="SizeName"
+                                            />
+                                        </Field>
+                                    </div>
 
-                  <div className="col-12 col-xl-4">
-                      <div className="d-flex flex-column gap-4">
+                                    <div className="col-12">
+                                        <Field label="Product Colors">
+                                            <Select
+                                                value={form.color}
+                                                onChange={update("color")}
+                                                options={productColors}
+                                                valueKey="ColorId"
+                                                labelKey="ColorName"
+                                            />
+                                        </Field>
+                                    </div>
+                                </div>
+                            </Card>
 
-                          {/* Product Details */}
-                          <Card title="Product Details">
-                              <div className="row g-3">
-                                  <div className="col-6">
-                                      <Field label="Brand Name">
-                                          <Select
-                                              value={form.brand}
-                                              onChange={update("brand")}
-                                              options={[
-                                                  "Adidas",
-                                                  "Nike",
-                                                  "Puma",
-                                                  "Reebok",
-                                                  "H&M",
-                                              ]}
-                                          />
-                                      </Field>
-                                  </div>
+                            {/* Product Pricing */}
+                            <Card title="Product Pricing">
+                                <div className="row g-3">
+                                    <div className="col-6">
+                                        <Field label="Price">
+                                            <div className="input-group">
+                                                <span className="input-group-text bg-white border-end-0">
+                                                    ₹
+                                                </span>
 
-                                  <div className="col-6">
-                                      <Field label="Product Size">
-                                          <Select
-                                              value={form.size}
-                                              onChange={update("size")}
-                                              options={[
-                                                  "Small",
-                                                  "Medium",
-                                                  "Large",
-                                                  "X-Large",
-                                              ]}
-                                          />
-                                      </Field>
-                                  </div>
+                                                <input
+                                                    type="number"
+                                                    className="form-control product-input border-start-0"
+                                                    value={form.price}
+                                                    onChange={(e) =>
+                                                        update("price")(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </div>
 
-                                  <div className="col-12">
-                                      <Field label="Product Colors">
-                                          <Select
-                                              value={form.color}
-                                              onChange={update("color")}
-                                              options={[
-                                                  "Black and White",
-                                                  "All Black",
-                                                  "Navy Blue",
-                                                  "Charcoal Grey",
-                                              ]}
-                                          />
-                                      </Field>
-                                  </div>
-                              </div>
-                          </Card>
+                                            {errors.price && (
+                                                <div className="text-danger small mt-1">
+                                                    {errors.price}
+                                                </div>
+                                            )}
+                                        </Field>
+                                    </div>
 
-                          {/* Product Pricing */}
-                          <Card title="Product Pricing">
-                              <div className="row g-3">
-                                  <div className="col-6">
-                                      <Field label="Price">
-                                          <div className="input-group">
-                                              <span className="input-group-text bg-white border-end-0">
-                                                  $
-                                              </span>
+                                    <div className="col-6">
+                                        <Field label="Compare-at Price">
+                                            <div className="input-group">
+                                                <span className="input-group-text bg-white border-end-0">
+                                                    ₹
+                                                </span>
 
-                                              <input
-                                                  type="number"
-                                                  className="form-control product-input border-start-0"
-                                                  value={form.price}
-                                                  onChange={(e) =>
-                                                      update("price")(
-                                                          e.target.value
-                                                      )
-                                                  }
-                                              />
-                                          </div>
+                                                <input
+                                                    type="number"
+                                                    className="form-control product-input border-start-0"
+                                                    value={
+                                                        form.comparePrice
+                                                    }
+                                                    onChange={(e) =>
+                                                        update(
+                                                            "comparePrice"
+                                                        )(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        </Field>
+                                    </div>
 
-                                          {errors.price && (
-                                              <div className="text-danger small mt-1">
-                                                  {errors.price}
-                                              </div>
-                                          )}
-                                      </Field>
-                                  </div>
+                                    <div className="col-6">
+                                        <Field label="Discount">
+                                            <Select
+                                                value={form.discount}
+                                                onChange={update("discount")}
+                                                options={[
+                                                    "5",
+                                                    "10",
+                                                    "15",
+                                                    "20",
+                                                    "25",
+                                                ]}
+                                            />
+                                        </Field>
+                                    </div>
 
-                                  <div className="col-6">
-                                      <Field label="Compare-at Price">
-                                          <div className="input-group">
-                                              <span className="input-group-text bg-white border-end-0">
-                                                  $
-                                              </span>
+                                    <div className="col-6">
+                                        <Field label="Minimum Order">
+                                            <input
+                                                type="number"
+                                                className="form-control product-input"
+                                                value={form.minOrder}
+                                                onChange={(e) =>
+                                                    update("minOrder")(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </Field>
+                                    </div>
+                                </div>
+                            </Card>
 
-                                              <input
-                                                  type="number"
-                                                  className="form-control product-input border-start-0"
-                                                  value={
-                                                      form.comparePrice
-                                                  }
-                                                  onChange={(e) =>
-                                                      update(
-                                                          "comparePrice"
-                                                      )(
-                                                          e.target.value
-                                                      )
-                                                  }
-                                              />
-                                          </div>
-                                      </Field>
-                                  </div>
+                            {/* Product Image */}
+                            <Card
+                                title="Product Image"
+                                right={
+                                    <i className="bi bi-info-circle text-secondary"></i>
+                                }
+                            >
+                                <div className="row g-3">
 
-                                  <div className="col-6">
-                                      <Field label="Discount">
-                                          <Select
-                                              value={form.discount}
-                                              onChange={update("discount")}
-                                              options={[
-                                                  "5",
-                                                  "10",
-                                                  "15",
-                                                  "20",
-                                                  "25",
-                                              ]}
-                                          />
-                                      </Field>
-                                  </div>
+                                    {/* Upload Button */}
+                                    <div className="col-4">
+                                        <button
+                                            type="upload-button"
+                                            onClick={() =>
+                                                fileInputRef.current?.click()
+                                            }
+                                            disabled={images.length >= 4}
+                                            className="upload-box w-100"
+                                        >
+                                            <i className="bi bi-image"></i>
 
-                                  <div className="col-6">
-                                      <Field label="Minimum Order">
-                                          <input
-                                              type="number"
-                                              className="form-control product-input"
-                                              value={form.minOrder}
-                                              onChange={(e) =>
-                                                  update("minOrder")(
-                                                      e.target.value
-                                                  )
-                                              }
-                                          />
-                                      </Field>
-                                  </div>
-                              </div>
-                          </Card>
+                                            <span>
+                                                Click to Upload
+                                            </span>
+                                        </button>
+                                    </div>
 
-                          {/* Product Image */}
-                          <Card
-                              title="Product Image"
-                              right={
-                                  <i className="bi bi-info-circle text-secondary"></i>
-                              }
-                          >
-                              <div className="row g-3">
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        hidden
+                                        onChange={(e) =>
+                                            handleFiles(
+                                                e.target.files
+                                            )
+                                        }
+                                    />
 
-                                  {/* Upload Button */}
-                                  <div className="col-4">
-                                      <button
-                                          type="button"
-                                          onClick={() =>
-                                              fileInputRef.current?.click()
-                                          }
-                                          disabled={images.length >= 4}
-                                          className="upload-box w-100"
-                                      >
-                                          <i className="bi bi-image"></i>
+                                    {/* Images */}
+                                    {images.map((image) => (
+                                        <div
+                                            key={image.id}
+                                            className="col-4"
+                                        >
+                                            <div className="image-preview">
+                                                {image.url ? (
+                                                    <img
+                                                        src={image.url}
+                                                        alt="Product"
+                                                        className="w-100 h-100 object-fit-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="no-image">
+                                                        no image
+                                                    </div>
+                                                )}
 
-                                          <span>
-                                              Click to Upload
-                                          </span>
-                                      </button>
-                                  </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        removeImage(
+                                                            image.id
+                                                        )
+                                                    }
+                                                    className="remove-image-btn"
+                                                >
+                                                    <i className="bi bi-x"></i>
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
 
-                                  <input
-                                      ref={fileInputRef}
-                                      type="file"
-                                      accept="image/*"
-                                      multiple
-                                      hidden
-                                      onChange={(e) =>
-                                          handleFiles(
-                                              e.target.files
-                                          )
-                                      }
-                                  />
+                                <p className="small text-secondary mt-3 mb-0">
+                                    {images.length}/4 images · PNG or JPG,
+                                    up to 5MB each
+                                </p>
+                            </Card>
+                        </div>
+                    </div>
+                </div>
 
-                                  {/* Images */}
-                                  {images.map((image) => (
-                                      <div
-                                          key={image.id}
-                                          className="col-4"
-                                      >
-                                          <div className="image-preview">
-                                              {image.url ? (
-                                                  <img
-                                                      src={image.url}
-                                                      alt="Product"
-                                                      className="w-100 h-100 object-fit-cover"
-                                                  />
-                                              ) : (
-                                                  <div className="no-image">
-                                                      no image
-                                                  </div>
-                                              )}
+                {/* ========================================================= */}
+                {/* Footer Actions                                             */}
+                {/* ========================================================= */}
 
-                                              <button
-                                                  type="button"
-                                                  onClick={() =>
-                                                      removeImage(
-                                                          image.id
-                                                      )
-                                                  }
-                                                  className="remove-image-btn"
-                                              >
-                                                  <i className="bi bi-x"></i>
-                                                  Remove
-                                              </button>
-                                          </div>
-                                      </div>
-                                  ))}
-                              </div>
+                <div className="footer-actions mt-4 p-3 bg-white border rounded-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
 
-                              <p className="small text-secondary mt-3 mb-0">
-                                  {images.length}/4 images · PNG or JPG,
-                                  up to 5MB each
-                              </p>
-                          </Card>
-                      </div>
-                  </div>
-              </div>
+                    <div className="d-flex align-items-center gap-2">
+                        <button
+                            type="button"
+                            className="btn btn-light border d-flex align-items-center gap-2"
+                        >
+                            <i className="bi bi-save"></i>
+                            Save Product
+                        </button>
 
-              {/* ========================================================= */}
-              {/* Footer Actions                                             */}
-              {/* ========================================================= */}
+                        <button
+                            type="button"
+                            className="btn-schedule d-flex align-items-center gap-2"
+                        >
+                            <i className="bi bi-calendar-event"></i>
+                            Schedule
+                        </button>
 
-              <div className="footer-actions mt-4 p-3 bg-white border rounded-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <button
+                            type="button"
+                            onClick={saveProduct}
+                            className="btn-rose d-flex align-items-center gap-2"
+                        >
+                            <i
+                                className={`bi ${saved
+                                    ? "bi-check"
+                                    : "bi-plus"
+                                    }`}
+                            ></i>
 
-                  <button
-                      type="button"
-                      className="btn btn-light border d-flex align-items-center gap-2"
-                  >
-                      <i className="bi bi-save"></i>
-                      Save Product
-                  </button>
+                            {saved
+                                ? "Product Added"
+                                : "Add Product"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                  <div className="d-flex align-items-center gap-2">
-                      <button
-                          type="button"
-                          className="btn-schedule d-flex align-items-center gap-2"
-                      >
-                          <i className="bi bi-calendar-event"></i>
-                          Schedule
-                      </button>
-
-                      <button
-                          type="button"
-                          onClick={saveProduct}
-                          className="btn-rose d-flex align-items-center gap-2"
-                      >
-                          <i
-                              className={`bi ${saved
-                                  ? "bi-check"
-                                  : "bi-plus"
-                                  }`}
-                          ></i>
-
-                          {saved
-                              ? "Product Added"
-                              : "Add Product"}
-                      </button>
-                  </div>
-              </div>
-      </div>
-    </div>
-
-  );
+    );
 };
 
 export default AddEditViewProduct;

@@ -10,12 +10,16 @@ const App = () => {
     window.location.href = "/login";
   };
 
+  const isLoginPage = window.location.pathname === "/login" || window.location.pathname === "/";
+
   return (
     <>
-      <SessionTimeout
-        timeout={15 * 60 * 1000}
-        onTimeout={handleSessionTimeout}
-      />
+      {!isLoginPage && (
+        <SessionTimeout
+          timeout={30 * 60 * 1000}
+          onTimeout={handleSessionTimeout}
+        />
+      )}
 
       <AppRoutes />
     </>

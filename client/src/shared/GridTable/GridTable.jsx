@@ -158,14 +158,16 @@ const GridTable = ({
 
   const allRowsSelected =
     selectableRows.length > 0 &&
-    selectableRows.every((row) =>
-      selectedRows.includes(getRowKey(row))
-    );
+    selectableRows.every((row) => {
+      const rowIndex = data.indexOf(row);
+      return selectedRows.includes(getRowKey(row, rowIndex));
+    });
 
   const handleSelectAll = () => {
-    const selectableKeys = selectableRows.map((row) =>
-      getRowKey(row)
-    );
+    const selectableKeys = selectableRows.map((row) => {
+      const rowIndex = data.indexOf(row);
+      return getRowKey(row, rowIndex);
+    });
 
     if (allRowsSelected) {
       // Remove current page rows
@@ -359,6 +361,7 @@ const GridTable = ({
                         style={{
                           width: column.width,
                           ...column.cellStyle,
+                          textWrap:"wrap"
                         }}
                         className={
                           column.cellClassName

@@ -116,6 +116,11 @@
   box-sizing: border-box;
 
   font-size: 13px;
+  border-radius: 4px 0px 0px 4px;
+}
+
+.gridtable thead input:focus {
+  box-shadow: none;
 }
 
 

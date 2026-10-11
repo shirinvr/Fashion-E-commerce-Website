@@ -3,6 +3,8 @@ import GridTable from "../../../../shared/GridTable/GridTable";
 import { callDynamicApi } from "../../../../shared/apiService.jsx";
 import { ApiMethodNames } from "../../../../config/ServiceMapping.ts";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductGrid = ({
   searchValues = {},
@@ -68,25 +70,15 @@ const ProductGrid = ({
     },
 
     {
-      fieldname: "name",
+      fieldname: "ProductName",
       text: "Product",
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search product...",
-      width: "150px"
+      width: "130px"
     },
-
     {
-      fieldname: "description",
-      text: "Description",
-      filterable: true,
-      filterType: "text",
-      filterPlaceholder: "Search description...",
-      width: "150px"
-    },
-
-    {
-      fieldname: "category_name",
+      fieldname: "CategoryName",
       text: "Category",
       filterable: true,
       filterType: "text",
@@ -94,32 +86,33 @@ const ProductGrid = ({
       width: "150px"
     },
     {
-      fieldname: "category_name",
-      text: "Category",
+      fieldname: "SubCategoryName",
+      text: "Sub Category",
+      filterable: true,
+      filterType: "text",
+      filterPlaceholder: "Search category...",
+      width: "150px"
+    },
+    
+    {
+      fieldname: "BrandName",
+      text: "Brand",
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search category...",
       width: "150px"
     },
     {
-      fieldname: "category_name",
-      text: "Category",
-      filterable: true,
-      filterType: "text",
-      filterPlaceholder: "Search category...",
-      width: "150px"
-    },
-    {
-      fieldname: "category_name",
-      text: "Category",
+      fieldname: "StockQuantity",
+      text: "Stock Quantity",
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search category...",
       width: "200px"
     },
     {
-      fieldname: "category_name",
-      text: "Category",
+      fieldname: "MinimumStockQuantity",
+      text: "Minimum Stock Quantity",
       filterable: true,
       filterType: "text",
       filterPlaceholder: "Search category...",
@@ -127,24 +120,28 @@ const ProductGrid = ({
     },
 
     {
-      fieldname: "price",
+      fieldname: "Price",
       text: "Price",
       filterable: true,
       filterType: "number",
       filterPlaceholder: "Search price...",
-      width: "200px",
-
-      render: (product) => {
-        if (
-          product.price === null ||
-          product.price === undefined ||
-          product.price === ""
-        ) {
-          return "";
-        }
-
-        return `₹${Number(product.price).toFixed(2)}`;
-      },
+      width: "200px"
+    },
+    {
+      fieldname: "DiscountPercent",
+      text: "Discount Percent",
+      filterable: true,
+      filterType: "number",
+      filterPlaceholder: "Search price...",
+      width: "200px"
+    },
+    {
+      fieldname: "CompareAtPrice",
+      text: "Compare At Price",
+      filterable: true,
+      filterType: "number",
+      filterPlaceholder: "Search price...",
+      width: "200px"
     },
 
     // {
@@ -192,7 +189,18 @@ const ProductGrid = ({
           break;
 
         case "Edit":
-          onEdit?.(selectedProducts);
+          if (selectedProducts.length !== 1) {
+            toast.warning(
+                                "Please select one product to edit.",
+                                {
+                                    position: "top-right",
+                                    closeButton: false
+                                }
+                            );
+            return;
+          }
+          onEdit?.(selectedProducts[0]);
+          navigate(`/landingpage/editproducts/${selectedProducts[0]}`);
           break;
 
         case "Delete":
@@ -219,12 +227,13 @@ const ProductGrid = ({
       onDelete,
       onView,
       onDownload,
+      navigate
     ]
   );
 
   const getAllProducts = useCallback(async () => {
     try {
-      const res = await callDynamicApi(ApiMethodNames.GetCity, {});
+      const res = await callDynamicApi(ApiMethodNames.GetAllProductdetails, {Mode:1});
 
       if (res.success === true) {
         setProducts(res.data.result1);
@@ -248,7 +257,7 @@ const ProductGrid = ({
 
   return (
     <div className="row">
-
+      <ToastContainer />
       <div className="col-md-12 prod-grid">
         <GridTable
           columns={columns}
@@ -257,10 +266,8 @@ const ProductGrid = ({
           selectable={selectionEnabled}
           selectedRows={selectedProducts}
           onSelectionChange={setSelectedProducts}
-          rowKey="id"
-          isRowSelectable={(row) =>
-            row.status === "ACTIVE"
-          }
+          rowKey="ProductId"
+          isRowSelectable={()=>true}
 
           searchValues={searchValues}
           onSearchChange={onSearchChange}

@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { callDynamicApi } from "../../../../shared/apiService.jsx";
 import { ApiMethodNames } from "../../../../config/ServiceMapping.ts";
 import "./AddEditViewProduct.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useParams } from "react-router-dom";
 
 const AddEditViewProduct = ({
     searchValues = {},
@@ -16,6 +19,7 @@ const AddEditViewProduct = ({
     const [productBrand, setProductBrand] = useState([]);
     const [productSize, setProductSize] = useState([]);
     const [productColors, setProductColors] = useState([]);
+    const { productId } = useParams();
 
     const getAllProductCategory = useCallback(async () => {
         try {
@@ -73,18 +77,69 @@ const AddEditViewProduct = ({
         }
     }, []);
 
+    const getProductById = useCallback(async () => {
+        if (!productId) return;
+
+        try {
+            const res = await callDynamicApi(
+                ApiMethodNames.GetProductById,
+                {
+                    ProductId: Number(productId),
+                }
+            );
+
+            console.log("Product details response:", res);
+
+            if (res.success === true) {
+                const product = res.data?.result1?.[0];
+
+                if (!product) {
+                    toast.error("Product details not found.");
+                    return;
+                }
+
+                setForm({
+                    name: product.ProductName ?? "",
+                    description: product.ProductDescription ?? "",
+                    CategoryId: String(product.CategoryId ?? "0"),
+                    SubCategoryId: String(product.SubCategoryId ?? "0"),
+                    sku: product.SKU ?? "",
+                    stock: String(product.StockQuantity ?? "0"),
+                    minStock: String(product.MinimumStockQuantity ?? "0"),
+                    BrandId: String(product.BrandId ?? "0"),
+                    SizeId: String(product.SizeId ?? "0"),
+                    ColorId: String(product.ColorId ?? "0"),
+                    price: String(product.Price ?? "0.00"),
+                    comparePrice: String(product.CompareAtPrice ?? "0"),
+                    discount: String(product.DiscountPercent ?? "0"),
+                    minOrder: String(product.MinimumOrderQuantity ?? "0"),
+                });
+            } else {
+                toast.error(res.message || "Unable to load product details.");
+            }
+        } catch (error) {
+            console.error("Get product by ID error:", error);
+            toast.error("Something went wrong while loading product details.");
+        }
+    }, [productId]);
+
     useEffect(() => {
         getAllProductCategory();
         getAllProductSubCategory();
         getAllProductBrand();
         getAllProductSize();
         getAllProductColors();
+        if(productId){
+            getProductById();
+        }
     }, [
         getAllProductCategory,
         getAllProductSubCategory,
         getAllProductBrand,
         getAllProductSize,
-        getAllProductColors
+        getAllProductColors,
+        productId,
+        getProductById
     ]);
 
     const handleAdd = () => {
@@ -118,7 +173,7 @@ const AddEditViewProduct = ({
         );
     }
 
-    function Select({ value, onChange, options, placeholder, valueKey, labelKey }) {
+    function ProductSelect({ value, onChange, options, placeholder, valueKey, labelKey }) {
         return (
             <div className="position-relative">
                 <select
@@ -157,26 +212,20 @@ const AddEditViewProduct = ({
     const fileInputRef = useRef(null);
 
     const [form, setForm] = useState({
-        name: "Premium Half Sleeve T-Shirt - Brooklyn Fleece",
-
-        description:
-            "Looking for a little extra warmth? Grab this classic hoodie. Smooth on the outside with unbrushed loops on the inside, our mid weight French terry is comfortable enough to wear year long.\n\nProduct Details\n- Body: 80% cotton/20% polyester. Hood lining: 100% cotton.\n- Colour Shown: Black/White\n- Style: FV7283-010",
-
-        category: "Men's Clothes",
-        subCategory: "Men's Tops & T-Shirts",
-
-        sku: "SKU-BB-66-A6",
-        stock: "10120",
-        minStock: "100",
-
-        brand: "Adidas",
-        size: "Medium",
-        color: "Black and White",
-
-        price: "12120.00",
-        comparePrice: "10120.00",
-        discount: "15",
-        minOrder: "100",
+        name: "", 
+        description: "", 
+        CategoryId: "0", 
+        SubCategoryId: "0", 
+        sku: "", 
+        stock: "0", 
+        minStock: "0", 
+        BrandId: "0", 
+        SizeId: "0", 
+        ColorId: "0", 
+        price: "0.00", 
+        comparePrice: "0", 
+        discount: "0", 
+        minOrder: "0"
     });
 
     const [images, setImages] = useState([
@@ -192,7 +241,6 @@ const AddEditViewProduct = ({
         },
     ]);
 
-    const [saved, setSaved] = useState(false);
     const [errors, setErrors] = useState({});
 
     // -----------------------------------------------------------------------
@@ -292,12 +340,12 @@ const AddEditViewProduct = ({
                     ProductName: form.name,
                     ProductDescription: form.description,
 
-                    CategoryId: form.category,
-                    SubCategoryId: form.subCategory,
+                    CategoryId: form.CategoryId,
+                    SubCategoryId: form.SubCategoryId,
 
-                    BrandId: form.brand,
-                    SizeId: form.size,
-                    ColorId: form.color,
+                    BrandId: form.BrandId,
+                    SizeId: form.SizeId,
+                    ColorId: form.ColorId,
 
                     SKU: form.sku,
 
@@ -314,7 +362,14 @@ const AddEditViewProduct = ({
             console.log(res);
 
             if (res.success === true) {
-                setSaved(true);
+                toast.error(
+                    res?.data?.message ||
+                    "added succesfully.",
+                    {
+                        position: "top-right",
+                        closeButton: false
+                    }
+                );
             } else {
                 alert(res.message || "Unable to save product.");
             }
@@ -334,6 +389,7 @@ const AddEditViewProduct = ({
 
     return (
         <div className="row">
+            <ToastContainer />
             <div className="col-md-12 prod-details">
                 {/* Breadcrumb */}
                 <div className="breadcrumb-area d-flex py-2 align-items-center gap-2 small text-secondary mb-1">
@@ -455,19 +511,20 @@ const AddEditViewProduct = ({
                             <Card title="Category">
                                 <div className="d-flex flex-column gap-4">
                                     <Field label="Product Category">
-                                        <Select
-                                            value={form.category}
-                                            onChange={update("category")}
+                                        <ProductSelect
+                                            value={form.CategoryId}
+                                            onChange={update("CategoryId")}
                                             options={productCategory}
+                                            placeholder='select'
                                             valueKey="CategoryId"
                                             labelKey="CategoryName"
                                         />
                                     </Field>
 
                                     <Field label="Product Sub-Category">
-                                        <Select
-                                            value={form.subCategory}
-                                            onChange={update("subCategory")}
+                                        <ProductSelect
+                                            value={form.SubCategoryId}
+                                            onChange={update("SubCategoryId")}
                                             options={productSubCategory}
                                             valueKey="SubCategoryId"
                                             labelKey="SubCategoryName"
@@ -547,9 +604,9 @@ const AddEditViewProduct = ({
                                 <div className="row g-3">
                                     <div className="col-6">
                                         <Field label="Brand Name">
-                                            <Select
-                                                value={form.brand}
-                                                onChange={update("brand")}
+                                            <ProductSelect
+                                                value={form.BrandId}
+                                                onChange={update("BrandId")}
                                                 options={productBrand}
                                                 valueKey="BrandId"
                                                 labelKey="BrandName"
@@ -559,9 +616,9 @@ const AddEditViewProduct = ({
 
                                     <div className="col-6">
                                         <Field label="Product Size">
-                                            <Select
-                                                value={form.size}
-                                                onChange={update("size")}
+                                            <ProductSelect
+                                                value={form.SizeId}
+                                                onChange={update("SizeId")}
                                                 options={productSize}
                                                 valueKey="SizeId"
                                                 labelKey="SizeName"
@@ -571,9 +628,9 @@ const AddEditViewProduct = ({
 
                                     <div className="col-12">
                                         <Field label="Product Colors">
-                                            <Select
-                                                value={form.color}
-                                                onChange={update("color")}
+                                            <ProductSelect
+                                                value={form.ColorId}
+                                                onChange={update("ColorId")}
                                                 options={productColors}
                                                 valueKey="ColorId"
                                                 labelKey="ColorName"
@@ -640,7 +697,7 @@ const AddEditViewProduct = ({
 
                                     <div className="col-6">
                                         <Field label="Discount">
-                                            <Select
+                                            <ProductSelect
                                                 value={form.discount}
                                                 onChange={update("discount")}
                                                 options={[
@@ -764,7 +821,7 @@ const AddEditViewProduct = ({
 
                     <div className="d-flex align-items-center gap-2">
                         <button
-                            type="button"
+                            type="button" onClick={saveProduct}
                             className="btn btn-light border d-flex align-items-center gap-2"
                         >
                             <i className="bi bi-save"></i>
@@ -779,22 +836,7 @@ const AddEditViewProduct = ({
                             Schedule
                         </button>
 
-                        <button
-                            type="button"
-                            onClick={saveProduct}
-                            className="btn-rose d-flex align-items-center gap-2"
-                        >
-                            <i
-                                className={`bi ${saved
-                                    ? "bi-check"
-                                    : "bi-plus"
-                                    }`}
-                            ></i>
 
-                            {saved
-                                ? "Product Added"
-                                : "Add Product"}
-                        </button>
                     </div>
                 </div>
             </div>

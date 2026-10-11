@@ -25,6 +25,15 @@ const Login = () => {
             });
             return;
         }
+        if (email) {
+            if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+                toast.warning("Please enter valid email", {
+                    position: "top-right",
+                    closeButton: false
+                });
+                return;
+            }
+        }
 
         try {
             setLoading(true);
@@ -56,6 +65,12 @@ const Login = () => {
             if (result.success && result.message !== "") {
                 navigate('/landingpage/dashboard');
                 localStorage.setItem("User", JSON.stringify(result));
+            } else {
+                toast.error(result.message, {
+                    position: "top-right",
+                    closeButton: false
+                });
+                return;
             }
 
             setEmail("");
@@ -160,7 +175,11 @@ const Login = () => {
                                                         name="password"
                                                         placeholder="Enter password"
                                                         value={password}
-                                                        onChange={(e) => setPassword(e.target.value)}
+                                                        onChange={(e) => {
+                                                            const pswd = e.target.value
+                                                            if (pswd === "" || (/^\S+$/).test(pswd))
+                                                                setPassword(pswd);
+                                                        }}
                                                         autoComplete="current-password"
                                                     />
 
